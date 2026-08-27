@@ -1,0 +1,14 @@
+// Scan to confirm to post funnel with drop-off rates.
+// Event names must match mobile telemetry and AL posting telemetry.
+customEvents
+| where timestamp > ago(24h)
+| where name in ("AdvWMS.Scan", "AdvWMS.Scan.Confirm", "AdvWMS.Post")
+| summarize events=count() by name, bin(timestamp, 15m)
+| evaluate pivot(name, sum(events))
+| extend scans=coalesce(['AdvWMS.Scan'], 0),
+         confirms=coalesce(['AdvWMS.Scan.Confirm'], 0),
+         posts=coalesce(['AdvWMS.Post'], 0)
+| extend confirmDropOffRate=iff(scans == 0, 0.0, 1.0 - todouble(confirms) / todouble(scans)),
+         postDropOffRate=iff(confirms == 0, 0.0, 1.0 - todouble(posts) / todouble(confirms))
+| project timestamp, scans, confirms, posts, confirmDropOffRate, postDropOffRate
+| order by timestamp asc

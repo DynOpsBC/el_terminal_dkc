@@ -1,0 +1,3 @@
+https://docs.dynops.com/bcwmsapp/
+
+⚠️ Pre-submission action: publish the final v1.0 documentation portal and verify this URL returns HTTP 200 without authentication.

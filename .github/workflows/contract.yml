@@ -1,0 +1,26 @@
+name: Contract Tests
+
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+jobs:
+  newman:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+      - name: Install Newman
+        run: npm install -g newman
+      - name: Run BCWMSApp contract collection
+        env:
+          BC_SANDBOX_TENANT_ID: ${{ secrets.BC_SANDBOX_TENANT_ID }}
+          BC_API_TOKEN: ${{ secrets.BC_API_TOKEN }}
+        run: |
+          newman run contract-tests/postman/BCWMSApp.postman_collection.json \
+            --environment contract-tests/postman/BCWMSApp.postman_environment.json \
+            --env-var tenantId="$BC_SANDBOX_TENANT_ID" \
+            --env-var accessToken="$BC_API_TOKEN"

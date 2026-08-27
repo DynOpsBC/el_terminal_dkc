@@ -1,0 +1,180 @@
+openapi: 3.1.0
+info:
+  title: BCWMSApp API
+  version: 1.0.0
+  description: Custom Business Central API surface for BCWMSApp mobile, web, and integration clients.
+servers:
+  - url: https://api.businesscentral.dynamics.com/v2.0/{tenantId}/{environmentName}/api/dynops/bcwms/v1.0
+    variables:
+      tenantId:
+        default: 00000000-0000-0000-0000-000000000000
+      environmentName:
+        default: Sandbox
+security:
+  - bearerAuth: []
+paths:
+  /companies({companyId})/licensePlates:
+    get: { summary: List license plates, responses: { "200": { description: OK } } }
+    post: { summary: Create license plate, requestBody: { $ref: "#/components/requestBodies/LicensePlate" }, responses: { "201": { description: Created } } }
+  /companies({companyId})/licensePlates({id})/Microsoft.NAV.build:
+    post: { summary: Build license plate, responses: { "200": { description: OK } } }
+  /companies({companyId})/licensePlates({id})/Microsoft.NAV.nest:
+    post: { summary: Nest license plate, responses: { "200": { description: OK } } }
+  /companies({companyId})/receipts:
+    get: { summary: List receipts, responses: { "200": { description: OK } } }
+    post: { summary: Create receipt, requestBody: { $ref: "#/components/requestBodies/Receipt" }, responses: { "201": { description: Created } } }
+  /companies({companyId})/putaways:
+    get: { summary: List put-aways, responses: { "200": { description: OK } } }
+    post: { summary: Create put-away, requestBody: { $ref: "#/components/requestBodies/Putaway" }, responses: { "201": { description: Created } } }
+  /companies({companyId})/picks:
+    get: { summary: List picks, responses: { "200": { description: OK } } }
+    post: { summary: Create pick, requestBody: { $ref: "#/components/requestBodies/Pick" }, responses: { "201": { description: Created } } }
+  /companies({companyId})/shipments:
+    get: { summary: List shipments, responses: { "200": { description: OK } } }
+    post: { summary: Create shipment, requestBody: { $ref: "#/components/requestBodies/Shipment" }, responses: { "201": { description: Created } } }
+  /companies({companyId})/movements:
+    get: { summary: List movements, responses: { "200": { description: OK } } }
+    post: { summary: Create movement, requestBody: { $ref: "#/components/requestBodies/Movement" }, responses: { "201": { description: Created } } }
+  /companies({companyId})/countSheets:
+    get: { summary: List count sheets, responses: { "200": { description: OK } } }
+    post: { summary: Create count sheet, requestBody: { $ref: "#/components/requestBodies/CountSheet" }, responses: { "201": { description: Created } } }
+  /companies({companyId})/productionConsumption:
+    get: { summary: List production consumption entries, responses: { "200": { description: OK } } }
+    post: { summary: Create production consumption, requestBody: { $ref: "#/components/requestBodies/ProductionConsumption" }, responses: { "201": { description: Created } } }
+  /companies({companyId})/productionOutput:
+    get: { summary: List production output entries, responses: { "200": { description: OK } } }
+    post: { summary: Create production output, requestBody: { $ref: "#/components/requestBodies/ProductionOutput" }, responses: { "201": { description: Created } } }
+  /companies({companyId})/assemblies:
+    get: { summary: List assemblies, responses: { "200": { description: OK } } }
+    post: { summary: Create assembly transaction, requestBody: { $ref: "#/components/requestBodies/Assembly" }, responses: { "201": { description: Created } } }
+  /companies({companyId})/items:
+    get: { summary: List items, responses: { "200": { description: OK } } }
+  /companies({companyId})/bins:
+    get: { summary: List bins, responses: { "200": { description: OK } } }
+  /companies({companyId})/devices:
+    get: { summary: List devices, responses: { "200": { description: OK } } }
+    post: { summary: Register device, requestBody: { $ref: "#/components/requestBodies/Device" }, responses: { "201": { description: Created } } }
+  /companies({companyId})/barcodes:
+    get: { summary: List barcode rules, responses: { "200": { description: OK } } }
+    post: { summary: Parse barcode, requestBody: { $ref: "#/components/requestBodies/Barcode" }, responses: { "201": { description: Created } } }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    companyId:
+      name: companyId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    id:
+      name: id
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+  requestBodies:
+    LicensePlate: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/LicensePlate" } } } }
+    Receipt: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/Receipt" } } } }
+    Putaway: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/Putaway" } } } }
+    Pick: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/Pick" } } } }
+    Shipment: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/Shipment" } } } }
+    Movement: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/Movement" } } } }
+    CountSheet: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/CountSheet" } } } }
+    ProductionConsumption: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/ProductionConsumption" } } } }
+    ProductionOutput: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/ProductionOutput" } } } }
+    Assembly: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/Assembly" } } } }
+    Device: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/Device" } } } }
+    Barcode: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/Barcode" } } } }
+  schemas:
+    BaseEntity:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        systemId: { type: string, format: uuid }
+        number: { type: string }
+        status: { type: string }
+        locationCode: { type: string }
+        deviceId: { type: string }
+        userId: { type: string }
+        lastModifiedDateTime: { type: string, format: date-time }
+    LicensePlate:
+      allOf:
+        - $ref: "#/components/schemas/BaseEntity"
+        - type: object
+          properties:
+            lpNo: { type: string }
+            parentLpNo: { type: string }
+            sscc: { type: string }
+            itemNo: { type: string }
+            quantity: { type: number }
+            binCode: { type: string }
+    Receipt:
+      allOf:
+        - $ref: "#/components/schemas/BaseEntity"
+        - type: object
+          properties: { sourceDocumentNo: { type: string }, vendorNo: { type: string }, itemNo: { type: string }, quantityToReceive: { type: number } }
+    Putaway:
+      allOf:
+        - $ref: "#/components/schemas/BaseEntity"
+        - type: object
+          properties: { activityNo: { type: string }, sourceBinCode: { type: string }, destinationBinCode: { type: string }, quantityToHandle: { type: number } }
+    Pick:
+      allOf:
+        - $ref: "#/components/schemas/BaseEntity"
+        - type: object
+          properties: { pickNo: { type: string }, assignedUserId: { type: string }, sourceBinCode: { type: string }, quantityToPick: { type: number }, shortPickReason: { type: string } }
+    Shipment:
+      allOf:
+        - $ref: "#/components/schemas/BaseEntity"
+        - type: object
+          properties: { shipmentNo: { type: string }, customerNo: { type: string }, lpNo: { type: string }, quantityToShip: { type: number } }
+    Movement:
+      allOf:
+        - $ref: "#/components/schemas/BaseEntity"
+        - type: object
+          properties: { movementNo: { type: string }, fromBinCode: { type: string }, toBinCode: { type: string }, itemNo: { type: string }, quantity: { type: number } }
+    CountSheet:
+      allOf:
+        - $ref: "#/components/schemas/BaseEntity"
+        - type: object
+          properties: { sheetNo: { type: string }, countMode: { type: string }, counter1: { type: string }, counter2: { type: string }, recountRequired: { type: boolean } }
+    ProductionConsumption:
+      allOf:
+        - $ref: "#/components/schemas/BaseEntity"
+        - type: object
+          properties: { productionOrderNo: { type: string }, componentItemNo: { type: string }, binCode: { type: string }, quantityConsumed: { type: number } }
+    ProductionOutput:
+      allOf:
+        - $ref: "#/components/schemas/BaseEntity"
+        - type: object
+          properties: { productionOrderNo: { type: string }, outputItemNo: { type: string }, outputQuantity: { type: number }, lpNo: { type: string } }
+    Assembly:
+      allOf:
+        - $ref: "#/components/schemas/BaseEntity"
+        - type: object
+          properties: { assemblyOrderNo: { type: string }, itemNo: { type: string }, quantityToAssemble: { type: number }, componentQuantity: { type: number } }
+    Item:
+      allOf:
+        - $ref: "#/components/schemas/BaseEntity"
+        - type: object
+          properties: { itemNo: { type: string }, description: { type: string }, baseUnitOfMeasure: { type: string }, inventory: { type: number } }
+    Bin:
+      allOf:
+        - $ref: "#/components/schemas/BaseEntity"
+        - type: object
+          properties: { binCode: { type: string }, zoneCode: { type: string }, binTypeCode: { type: string }, blocked: { type: boolean } }
+    Device:
+      allOf:
+        - $ref: "#/components/schemas/BaseEntity"
+        - type: object
+          properties: { deviceName: { type: string }, fingerprint: { type: string }, appVersion: { type: string }, lastHeartbeat: { type: string, format: date-time } }
+    Barcode:
+      type: object
+      properties:
+        barcode: { type: string }
+        symbology: { type: string }
+        targetType: { type: string }
+        targetNo: { type: string }
+        parsedFields: { type: object, additionalProperties: true }

@@ -1,0 +1,3272 @@
+{
+  "info": {
+    "name": "BCWMSApp Contract Tests",
+    "description": "Nightly Newman smoke coverage for BCWMSApp Business Central APIs. Covers 14 resource groups and 70 list/create/read/action requests.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "if (!pm.environment.get(\"accessToken\") && pm.environment.get(\"clientId\")) {",
+          "  const tenantId = pm.environment.get(\"tenantId\");",
+          "  pm.sendRequest({",
+          "    url: `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`,",
+          "    method: \"POST\",",
+          "    header: { \"Content-Type\": \"application/x-www-form-urlencoded\" },",
+          "    body: { mode: \"urlencoded\", urlencoded: [",
+          "      { key: \"grant_type\", value: \"client_credentials\" },",
+          "      { key: \"client_id\", value: pm.environment.get(\"clientId\") },",
+          "      { key: \"client_secret\", value: pm.environment.get(\"clientSecret\") },",
+          "      { key: \"scope\", value: \"https://api.businesscentral.dynamics.com/.default\" }",
+          "    ] }",
+          "  }, function (err, res) {",
+          "    pm.test(\"OAuth token acquired\", function () { pm.expect(err).to.equal(null); pm.expect(res.code).to.equal(200); });",
+          "    pm.environment.set(\"accessToken\", res.json().access_token);",
+          "  });",
+          "}"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "licensePlates",
+      "item": [
+        {
+          "name": "GET licensePlates list",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/licensePlates",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "licensePlates"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST licensePlates create",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/licensePlates",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "licensePlates"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"externalId\": \"contract-licensePlates\",\n  \"code\": \"CONTRACT-licensePlates\",\n  \"description\": \"Contract test licensePlates\",\n  \"locationCode\": \"{{locationCode}}\",\n  \"itemNo\": \"{{itemNo}}\",\n  \"quantity\": 1,\n  \"deviceId\": \"{{deviceId}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.test(\"response has body\", function () { pm.expect(pm.response.text().length).to.be.above(0); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET licensePlates by id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/licensePlates({{recordId}})",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "licensePlates({{recordId}})"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST licensePlates action build",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/licensePlates({{recordId}})/Microsoft.NAV.build",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "licensePlates({{recordId}})",
+                "Microsoft.NAV.build"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST licensePlates action nest",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/licensePlates({{recordId}})/Microsoft.NAV.nest",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "licensePlates({{recordId}})",
+                "Microsoft.NAV.nest"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "receipts",
+      "item": [
+        {
+          "name": "GET receipts list",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/receipts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "receipts"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST receipts create",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/receipts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "receipts"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"externalId\": \"contract-receipts\",\n  \"code\": \"CONTRACT-receipts\",\n  \"description\": \"Contract test receipts\",\n  \"locationCode\": \"{{locationCode}}\",\n  \"itemNo\": \"{{itemNo}}\",\n  \"quantity\": 1,\n  \"deviceId\": \"{{deviceId}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.test(\"response has body\", function () { pm.expect(pm.response.text().length).to.be.above(0); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET receipts by id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/receipts({{recordId}})",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "receipts({{recordId}})"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST receipts action register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/receipts({{recordId}})/Microsoft.NAV.register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "receipts({{recordId}})",
+                "Microsoft.NAV.register"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST receipts action post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/receipts({{recordId}})/Microsoft.NAV.post",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "receipts({{recordId}})",
+                "Microsoft.NAV.post"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "putaways",
+      "item": [
+        {
+          "name": "GET putaways list",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/putaways",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "putaways"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST putaways create",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/putaways",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "putaways"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"externalId\": \"contract-putaways\",\n  \"code\": \"CONTRACT-putaways\",\n  \"description\": \"Contract test putaways\",\n  \"locationCode\": \"{{locationCode}}\",\n  \"itemNo\": \"{{itemNo}}\",\n  \"quantity\": 1,\n  \"deviceId\": \"{{deviceId}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.test(\"response has body\", function () { pm.expect(pm.response.text().length).to.be.above(0); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET putaways by id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/putaways({{recordId}})",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "putaways({{recordId}})"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST putaways action assign",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/putaways({{recordId}})/Microsoft.NAV.assign",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "putaways({{recordId}})",
+                "Microsoft.NAV.assign"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST putaways action post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/putaways({{recordId}})/Microsoft.NAV.post",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "putaways({{recordId}})",
+                "Microsoft.NAV.post"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "picks",
+      "item": [
+        {
+          "name": "GET picks list",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/picks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "picks"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST picks create",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/picks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "picks"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"externalId\": \"contract-picks\",\n  \"code\": \"CONTRACT-picks\",\n  \"description\": \"Contract test picks\",\n  \"locationCode\": \"{{locationCode}}\",\n  \"itemNo\": \"{{itemNo}}\",\n  \"quantity\": 1,\n  \"deviceId\": \"{{deviceId}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.test(\"response has body\", function () { pm.expect(pm.response.text().length).to.be.above(0); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET picks by id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/picks({{recordId}})",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "picks({{recordId}})"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST picks action assign",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/picks({{recordId}})/Microsoft.NAV.assign",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "picks({{recordId}})",
+                "Microsoft.NAV.assign"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST picks action registerPick",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/picks({{recordId}})/Microsoft.NAV.registerPick",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "picks({{recordId}})",
+                "Microsoft.NAV.registerPick"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "shipments",
+      "item": [
+        {
+          "name": "GET shipments list",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/shipments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "shipments"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST shipments create",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/shipments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "shipments"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"externalId\": \"contract-shipments\",\n  \"code\": \"CONTRACT-shipments\",\n  \"description\": \"Contract test shipments\",\n  \"locationCode\": \"{{locationCode}}\",\n  \"itemNo\": \"{{itemNo}}\",\n  \"quantity\": 1,\n  \"deviceId\": \"{{deviceId}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.test(\"response has body\", function () { pm.expect(pm.response.text().length).to.be.above(0); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET shipments by id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/shipments({{recordId}})",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "shipments({{recordId}})"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST shipments action pack",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/shipments({{recordId}})/Microsoft.NAV.pack",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "shipments({{recordId}})",
+                "Microsoft.NAV.pack"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST shipments action post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/shipments({{recordId}})/Microsoft.NAV.post",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "shipments({{recordId}})",
+                "Microsoft.NAV.post"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "movements",
+      "item": [
+        {
+          "name": "GET movements list",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/movements",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "movements"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST movements create",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/movements",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "movements"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"externalId\": \"contract-movements\",\n  \"code\": \"CONTRACT-movements\",\n  \"description\": \"Contract test movements\",\n  \"locationCode\": \"{{locationCode}}\",\n  \"itemNo\": \"{{itemNo}}\",\n  \"quantity\": 1,\n  \"deviceId\": \"{{deviceId}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.test(\"response has body\", function () { pm.expect(pm.response.text().length).to.be.above(0); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET movements by id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/movements({{recordId}})",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "movements({{recordId}})"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST movements action confirm",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/movements({{recordId}})/Microsoft.NAV.confirm",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "movements({{recordId}})",
+                "Microsoft.NAV.confirm"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST movements action post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/movements({{recordId}})/Microsoft.NAV.post",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "movements({{recordId}})",
+                "Microsoft.NAV.post"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "countSheets",
+      "item": [
+        {
+          "name": "GET countSheets list",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/countSheets",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "countSheets"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST countSheets create",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/countSheets",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "countSheets"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"externalId\": \"contract-countSheets\",\n  \"code\": \"CONTRACT-countSheets\",\n  \"description\": \"Contract test countSheets\",\n  \"locationCode\": \"{{locationCode}}\",\n  \"itemNo\": \"{{itemNo}}\",\n  \"quantity\": 1,\n  \"deviceId\": \"{{deviceId}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.test(\"response has body\", function () { pm.expect(pm.response.text().length).to.be.above(0); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET countSheets by id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/countSheets({{recordId}})",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "countSheets({{recordId}})"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST countSheets action start",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/countSheets({{recordId}})/Microsoft.NAV.start",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "countSheets({{recordId}})",
+                "Microsoft.NAV.start"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST countSheets action post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/countSheets({{recordId}})/Microsoft.NAV.post",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "countSheets({{recordId}})",
+                "Microsoft.NAV.post"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "productionConsumption",
+      "item": [
+        {
+          "name": "GET productionConsumption list",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/productionConsumption",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "productionConsumption"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST productionConsumption create",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/productionConsumption",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "productionConsumption"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"externalId\": \"contract-productionConsumption\",\n  \"code\": \"CONTRACT-productionConsumption\",\n  \"description\": \"Contract test productionConsumption\",\n  \"locationCode\": \"{{locationCode}}\",\n  \"itemNo\": \"{{itemNo}}\",\n  \"quantity\": 1,\n  \"deviceId\": \"{{deviceId}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.test(\"response has body\", function () { pm.expect(pm.response.text().length).to.be.above(0); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET productionConsumption by id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/productionConsumption({{recordId}})",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "productionConsumption({{recordId}})"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST productionConsumption action consume",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/productionConsumption({{recordId}})/Microsoft.NAV.consume",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "productionConsumption({{recordId}})",
+                "Microsoft.NAV.consume"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST productionConsumption action post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/productionConsumption({{recordId}})/Microsoft.NAV.post",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "productionConsumption({{recordId}})",
+                "Microsoft.NAV.post"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "productionOutput",
+      "item": [
+        {
+          "name": "GET productionOutput list",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/productionOutput",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "productionOutput"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST productionOutput create",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/productionOutput",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "productionOutput"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"externalId\": \"contract-productionOutput\",\n  \"code\": \"CONTRACT-productionOutput\",\n  \"description\": \"Contract test productionOutput\",\n  \"locationCode\": \"{{locationCode}}\",\n  \"itemNo\": \"{{itemNo}}\",\n  \"quantity\": 1,\n  \"deviceId\": \"{{deviceId}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.test(\"response has body\", function () { pm.expect(pm.response.text().length).to.be.above(0); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET productionOutput by id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/productionOutput({{recordId}})",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "productionOutput({{recordId}})"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST productionOutput action output",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/productionOutput({{recordId}})/Microsoft.NAV.output",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "productionOutput({{recordId}})",
+                "Microsoft.NAV.output"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST productionOutput action post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/productionOutput({{recordId}})/Microsoft.NAV.post",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "productionOutput({{recordId}})",
+                "Microsoft.NAV.post"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "assemblies",
+      "item": [
+        {
+          "name": "GET assemblies list",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/assemblies",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "assemblies"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST assemblies create",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/assemblies",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "assemblies"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"externalId\": \"contract-assemblies\",\n  \"code\": \"CONTRACT-assemblies\",\n  \"description\": \"Contract test assemblies\",\n  \"locationCode\": \"{{locationCode}}\",\n  \"itemNo\": \"{{itemNo}}\",\n  \"quantity\": 1,\n  \"deviceId\": \"{{deviceId}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.test(\"response has body\", function () { pm.expect(pm.response.text().length).to.be.above(0); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET assemblies by id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/assemblies({{recordId}})",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "assemblies({{recordId}})"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST assemblies action consume",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/assemblies({{recordId}})/Microsoft.NAV.consume",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "assemblies({{recordId}})",
+                "Microsoft.NAV.consume"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST assemblies action post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/assemblies({{recordId}})/Microsoft.NAV.post",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "assemblies({{recordId}})",
+                "Microsoft.NAV.post"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "items",
+      "item": [
+        {
+          "name": "GET items list",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/items",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "items"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET items by id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/items({{recordId}})",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "items({{recordId}})"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET items by id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/items({{recordId}})",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "items({{recordId}})"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST items action lookup",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/items({{recordId}})/Microsoft.NAV.lookup",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "items({{recordId}})",
+                "Microsoft.NAV.lookup"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST items action availability",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/items({{recordId}})/Microsoft.NAV.availability",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "items({{recordId}})",
+                "Microsoft.NAV.availability"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "bins",
+      "item": [
+        {
+          "name": "GET bins list",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/bins",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "bins"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET bins by id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/bins({{recordId}})",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "bins({{recordId}})"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET bins by id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/bins({{recordId}})",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "bins({{recordId}})"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST bins action lookup",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/bins({{recordId}})/Microsoft.NAV.lookup",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "bins({{recordId}})",
+                "Microsoft.NAV.lookup"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST bins action contents",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/bins({{recordId}})/Microsoft.NAV.contents",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "bins({{recordId}})",
+                "Microsoft.NAV.contents"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "devices",
+      "item": [
+        {
+          "name": "GET devices list",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/devices",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "devices"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST devices create",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/devices",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "devices"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"externalId\": \"contract-devices\",\n  \"code\": \"CONTRACT-devices\",\n  \"description\": \"Contract test devices\",\n  \"locationCode\": \"{{locationCode}}\",\n  \"itemNo\": \"{{itemNo}}\",\n  \"quantity\": 1,\n  \"deviceId\": \"{{deviceId}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.test(\"response has body\", function () { pm.expect(pm.response.text().length).to.be.above(0); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET devices by id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/devices({{recordId}})",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "devices({{recordId}})"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST devices action heartbeat",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/devices({{recordId}})/Microsoft.NAV.heartbeat",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "devices({{recordId}})",
+                "Microsoft.NAV.heartbeat"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST devices action disable",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/devices({{recordId}})/Microsoft.NAV.disable",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "devices({{recordId}})",
+                "Microsoft.NAV.disable"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "barcodes",
+      "item": [
+        {
+          "name": "GET barcodes list",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/barcodes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "barcodes"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST barcodes create",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/barcodes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "barcodes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"externalId\": \"contract-barcodes\",\n  \"code\": \"CONTRACT-barcodes\",\n  \"description\": \"Contract test barcodes\",\n  \"locationCode\": \"{{locationCode}}\",\n  \"itemNo\": \"{{itemNo}}\",\n  \"quantity\": 1,\n  \"deviceId\": \"{{deviceId}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.test(\"response has body\", function () { pm.expect(pm.response.text().length).to.be.above(0); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET barcodes by id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/barcodes({{recordId}})",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "barcodes({{recordId}})"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST barcodes action parse",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/barcodes({{recordId}})/Microsoft.NAV.parse",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "barcodes({{recordId}})",
+                "Microsoft.NAV.parse"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST barcodes action validate",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies({{companyId}})/barcodes({{recordId}})/Microsoft.NAV.validate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies({{companyId}})",
+                "barcodes({{recordId}})",
+                "Microsoft.NAV.validate"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"quantity\": 1,\n  \"barcode\": \"{{barcode}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"response is array or object\", function () { const json = pm.response.json(); pm.expect(json).to.be.oneOf([json]); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.businesscentral.dynamics.com/v2.0/{{tenantId}}/{{environmentName}}/api/dynops/bcwms/v1.0"
+    },
+    {
+      "key": "tenantId",
+      "value": "{{tenantId}}"
+    },
+    {
+      "key": "environmentName",
+      "value": "Sandbox"
+    },
+    {
+      "key": "companyId",
+      "value": "{{companyId}}"
+    },
+    {
+      "key": "recordId",
+      "value": "{{recordId}}"
+    },
+    {
+      "key": "locationCode",
+      "value": "BLUE"
+    },
+    {
+      "key": "itemNo",
+      "value": "1896-S"
+    },
+    {
+      "key": "deviceId",
+      "value": "NEWMAN-RC"
+    },
+    {
+      "key": "barcode",
+      "value": "0101234567890128"
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+https://dynops.com/eula
+
+⚠️ Pre-submission action: replace with final BCWMSApp license/EULA URL before AppSource submission.

@@ -1,0 +1,9 @@
+# Bootstrap output contains live SAS tokens and must never be committed.
+.local/
+*.secrets.json
+*.secrets.ps1
+*.sas.txt
+
+# Local Bicep/ARM build output.
+build/
+*.jsonc

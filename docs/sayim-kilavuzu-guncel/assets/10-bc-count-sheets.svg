@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="520" viewBox="0 0 1800 520" role="img" aria-labelledby="title desc">
+  <title id="title">Business Central Count Sheets listesi</title>
+  <desc id="desc">MERKEZDEPO için biri Posted, biri In Progress durumunda iki sayım belgesi.</desc>
+  <rect width="1800" height="520" fill="#f5f6f7"/>
+  <rect x="18" y="16" width="1764" height="488" rx="8" fill="#fff" stroke="#d9dde1"/>
+  <circle cx="58" cy="60" r="24" fill="#e1f4f6"/><path d="M68 60H49m0 0 8-8m-8 8 8 8" fill="none" stroke="#20313a" stroke-width="2"/>
+  <text x="96" y="68" font-family="Segoe UI,Arial,sans-serif" font-size="24" fill="#42546a">Count Sheets</text>
+  <line x1="38" y1="100" x2="1762" y2="100" stroke="#d6dadd"/>
+  <g font-family="Segoe UI,Arial,sans-serif" font-size="19" fill="#222">
+    <text x="95" y="137" fill="#008497">⌕</text><text x="142" y="137" fill="#008497">＋ Yeni</text>
+    <text x="252" y="137" fill="#008497">▦ Listeyi Düzenle</text><text x="450" y="137" fill="#008497">Sil</text>
+    <text x="515" y="137" fill="#008497">Düzenle</text><text x="620" y="137" fill="#008497">Görüntüle</text>
+    <text x="750" y="137" fill="#536378">Daha fazla seçenek</text>
+  </g>
+  <line x1="66" y1="157" x2="1736" y2="157" stroke="#cfd4d8"/>
+  <g font-family="Segoe UI,Arial,sans-serif" font-size="18" fill="#42546a">
+    <text x="150" y="212">No. ↑</text><text x="520" y="212">Location Code</text><text x="845" y="212">Mode</text><text x="1110" y="212">Status</text><text x="1410" y="212">Created DateTime</text>
+  </g>
+  <rect x="66" y="235" width="1670" height="58" fill="#a9e4e8"/>
+  <g font-family="Segoe UI,Arial,sans-serif" font-size="19" fill="#1e252b">
+    <text x="102" y="272">→</text><text x="150" y="272" fill="#006c7d" text-decoration="underline">CNT-20260819205528</text><text x="520" y="272">MERKEZDEPO</text><text x="845" y="272">Blind</text><text x="1110" y="272">Posted</text><text x="1410" y="272">8/19/2026 8:55 PM</text>
+    <text x="150" y="333" fill="#006c7d">CNT-20260819205551</text><text x="520" y="333">MERKEZDEPO</text><text x="845" y="333">Blind</text><text x="1110" y="333">In Progress</text><text x="1410" y="333">8/19/2026 8:55 PM</text>
+  </g>
+  <line x1="66" y1="293" x2="1736" y2="293" stroke="#d4d7da"/><line x1="66" y1="354" x2="1736" y2="354" stroke="#d4d7da"/>
+  <rect x="66" y="390" width="1670" height="78" rx="6" fill="#edf7f8"/>
+  <text x="94" y="424" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="700" fill="#006f7e">Terminalde açılacak belge: CNT-20260819205551 · In Progress</text>
+  <text x="94" y="451" font-family="Segoe UI,Arial,sans-serif" font-size="16" fill="#536378">Posted belge tamamlanmıştır; operatör sayım için In Progress satırını seçer.</text>
+</svg>

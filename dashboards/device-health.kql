@@ -1,0 +1,13 @@
+// Devices missing heartbeat for more than five minutes.
+// DeviceHeartbeat events should include DeviceId, TenantId, UserId, and AppVersion.
+customEvents
+| where timestamp > ago(2h)
+| where name == "AdvWMS.DeviceHeartbeat"
+| summarize lastHeartbeat=max(timestamp),
+            tenantId=any(tostring(customDimensions["TenantId"])),
+            userId=any(tostring(customDimensions["UserId"])),
+            appVersion=any(tostring(customDimensions["AppVersion"]))
+  by deviceId=tostring(customDimensions["DeviceId"])
+| extend missingForMinutes=datetime_diff("minute", now(), lastHeartbeat)
+| where missingForMinutes > 5
+| order by missingForMinutes desc

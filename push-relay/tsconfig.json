@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "outDir": "dist",
+    "rootDir": ".",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "index.ts",
+    "webhook/**/*.ts",
+    "signalr/**/*.ts",
+    "print-jobs-get/**/*.ts",
+    "print-jobs-claim/**/*.ts",
+    "print-jobs-status/**/*.ts",
+    "shared/**/*.ts"
+  ]
+}

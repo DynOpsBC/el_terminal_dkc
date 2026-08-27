@@ -1,0 +1,11 @@
+{
+  "al.enableCodeAnalysis": true,
+  "al.codeAnalyzers": [
+    "${CodeCop}",
+    "${UICop}",
+    "${PerTenantExtensionCop}"
+  ],
+  "al.ruleSetPath": "",
+  "al.backgroundCodeAnalysis": true
+}
+

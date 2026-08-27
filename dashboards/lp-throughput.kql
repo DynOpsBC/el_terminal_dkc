@@ -1,0 +1,9 @@
+// License plates built per second per warehouse location.
+// Requires custom event AdvWMS.LP.Built with LocationCode dimension.
+customEvents
+| where timestamp > ago(24h)
+| where name == "AdvWMS.LP.Built"
+| extend locationCode = tostring(customDimensions["LocationCode"])
+| summarize lpBuilt=count() by locationCode, bin(timestamp, 1m)
+| extend lpPerSecond = todouble(lpBuilt) / 60.0
+| order by timestamp asc, locationCode asc

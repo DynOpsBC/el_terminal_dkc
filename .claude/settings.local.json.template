@@ -1,0 +1,14 @@
+{
+  "_comment": "Copy this file to settings.local.json and Claude Code will pick it up. Settings.local.json is git-ignored so it won't leak to the repo. These permissions unlock the v1.10.0 Azure provisioning final steps (Function App publish, AAD redirect URIs, Static Web App deploys) so the assistant can finish them in auto-mode without prompting on every command.",
+  "permissions": {
+    "allow": [
+      "Bash(func azure functionapp publish bcwms-licensing-prod-func *)",
+      "Bash(az ad app update --id ccd865de-ef93-441a-9523-ceb43b42916f *)",
+      "Bash(az rest --method PATCH --url https://graph.microsoft.com/v1.0/applications/677013ed-e072-4a04-8824-a01a2c3f1e01 *)",
+      "Bash(npx --yes @azure/static-web-apps-cli@latest deploy ./dist *)",
+      "Bash(swa deploy ./dist *)",
+      "Bash(curl -sS -X POST https://bcwms-licensing-prod-func.azurewebsites.net/api/license/issue *)",
+      "Bash(curl -sS -X POST https://bcwms-licensing-prod-func.azurewebsites.net/api/license/verify *)"
+    ]
+  }
+}

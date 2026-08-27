@@ -1,0 +1,15 @@
+<resources>
+    <string name="count_sheet_title">Zählblätter</string>
+    <string name="count_blind_mode">Blindzählung</string>
+    <string name="count_sheet_no">Blattnr.</string>
+    <string name="count_item_no">Artikelnr.</string>
+    <string name="count_bin_code">Lagerplatzcode</string>
+    <string name="count_lp_no">Ladungsträger-Nr.</string>
+    <string name="count_system_qty">Systemmenge</string>
+    <string name="count_counted_qty">Gezählte Menge</string>
+    <string name="count_variance">Abweichung</string>
+    <string name="count_recount_required">Nachzählung erforderlich</string>
+    <string name="count_post">Zählblatt buchen</string>
+    <string name="count_start_recount">Nachzählung starten</string>
+    <string name="count_reveal_qty">Systemmenge anzeigen</string>
+</resources>

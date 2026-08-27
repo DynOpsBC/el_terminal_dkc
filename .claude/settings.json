@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -n '$top=\\\\|orderby=' /Users/kaanodabas/Desktop/EL_TERMINAL/WMS/android/app/src/main/java/com/dynops/bcwms/feature/PutAwayShipModules.kt)",
+      "Bash(grep -n '$top=\\\\|orderby=' /Users/kaanodabas/Desktop/EL_TERMINAL/WMS/android/app/src/main/java/com/dynops/bcwms/feature/MoveAndCountModules.kt)",
+      "Read(//Applications/Android Studio.app/Contents/jbr/Contents/Home/**)",
+      "Read(//Library/Java/JavaVirtualMachines/**)",
+      "Read(//opt/homebrew/opt/**)",
+      "Read(//usr/local/**)",
+      "Read(//Users/kaanodabas/Library/Android/sdk/**)",
+      "Bash(/Users/kaanodabas/Library/Android/sdk/platform-tools/adb devices *)",
+      "Bash(/Users/kaanodabas/Library/Android/sdk/emulator/emulator -list-avds)",
+      "Bash(/Users/kaanodabas/Library/Android/sdk/emulator/emulator -avd Medium_Phone_API_36.1 -netdelay none -netspeed full)",
+      "Bash(python3 -)"
+    ]
+  }
+}

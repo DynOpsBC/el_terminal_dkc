@@ -1,0 +1,137 @@
+name: EMU Android Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Sürüm (ör. 1.14.48)"
+        required: true
+        default: "1.14.48"
+  push:
+    tags:
+      - "emu-v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release-emu:
+    name: Signed EMU APK + update manifest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: "platform-tools platforms;android-35 build-tools;35.0.0"
+
+      - name: Resolve release identity
+        id: release
+        shell: bash
+        env:
+          DISPATCH_VERSION: ${{ inputs.version }}
+          REF_NAME: ${{ github.ref_name }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            VERSION="$DISPATCH_VERSION"
+          else
+            VERSION="${REF_NAME#emu-v}"
+          fi
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Sürüm MAJOR.MINOR.PATCH biçiminde olmalı: $VERSION"
+            exit 1
+          fi
+          VERSION_CODE=$((200000 + GITHUB_RUN_NUMBER))
+          TAG="emu-v$VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "version_code=$VERSION_CODE" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Inject EMU release signing key
+        shell: bash
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          for required in ANDROID_KEYSTORE_BASE64 KEYSTORE_PASSWORD KEY_PASSWORD KEY_ALIAS; do
+            if [ -z "${!required}" ]; then
+              echo "::error::Eksik GitHub Actions secret: $required"
+              exit 1
+            fi
+          done
+          mkdir -p android/play/keystore
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 -d > android/play/keystore/bcwms-release.jks
+          {
+            echo "storeFile=play/keystore/bcwms-release.jks"
+            echo "storePassword=$KEYSTORE_PASSWORD"
+            echo "keyAlias=$KEY_ALIAS"
+            echo "keyPassword=$KEY_PASSWORD"
+          } > android/play/keystore/keystore.properties
+
+      - name: Test and assemble signed EMU release
+        working-directory: android
+        shell: bash
+        run: |
+          chmod +x gradlew
+          ./gradlew \
+            :app:testEmuDebugUnitTest \
+            :app:lintEmuDebug \
+            :app:assembleEmuRelease \
+            -PreleaseVersionCode="${{ steps.release.outputs.version_code }}" \
+            -PreleaseVersionName="${{ steps.release.outputs.version }}" \
+            --console=plain
+
+      - name: Build verified update assets
+        id: assets
+        shell: bash
+        env:
+          VERSION: ${{ steps.release.outputs.version }}
+          VERSION_CODE: ${{ steps.release.outputs.version_code }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          APK="android/app/build/outputs/apk/emu/release/app-emu-release.apk"
+          if [ ! -f "$APK" ]; then
+            echo "::error::İmzalı EMU APK bulunamadı: $APK"
+            exit 1
+          fi
+          RELEASE_APK="BCWMS-EMU-${VERSION}-RELEASE.apk"
+          cp "$APK" "$RELEASE_APK"
+          SHA256=$(sha256sum "$RELEASE_APK" | awk '{print $1}')
+          jq -n \
+            --argjson versionCode "$VERSION_CODE" \
+            --arg versionName "${VERSION}-emu" \
+            --arg apkUrl "https://github.com/${REPOSITORY}/releases/download/${RELEASE_TAG}/${RELEASE_APK}" \
+            --arg sha256 "$SHA256" \
+            --arg releaseNotes "EMU v${VERSION}: bağımsız DKC el terminali güncellemesi." \
+            '{versionCode, versionName, apkUrl, sha256, releaseNotes}' > latest.json
+          echo "apk=$RELEASE_APK" >> "$GITHUB_OUTPUT"
+
+      - name: Upload CI artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: emu-android-release
+          path: |
+            ${{ steps.assets.outputs.apk }}
+            latest.json
+          retention-days: 30
+
+      - name: Publish EMU GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.release.outputs.tag }}
+          name: "BCWMS EMU v${{ steps.release.outputs.version }}"
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+          files: |
+            ${{ steps.assets.outputs.apk }}
+            latest.json

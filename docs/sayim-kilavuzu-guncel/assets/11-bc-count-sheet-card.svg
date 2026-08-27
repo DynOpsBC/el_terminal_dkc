@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1040" viewBox="0 0 1800 1040" role="img" aria-labelledby="title desc">
+  <title id="title">Business Central Count Sheet kartı</title>
+  <desc id="desc">CNT-20260819205551 sayım kartı; genel bilgiler, sayım durumu, sayıcı alanı ve sayım satırları.</desc>
+  <rect width="1800" height="1040" fill="#f5f6f7"/>
+  <rect x="18" y="16" width="1764" height="1008" rx="8" fill="#fff" stroke="#d9dde1"/>
+  <circle cx="56" cy="58" r="23" fill="#e1f4f6"/><path d="M66 58H47m0 0 8-8m-8 8 8 8" fill="none" stroke="#20313a" stroke-width="2"/>
+  <text x="96" y="66" font-family="Segoe UI,Arial,sans-serif" font-size="22" fill="#42546a">Count Sheet</text>
+  <text x="95" y="130" font-family="Segoe UI,Arial,sans-serif" font-size="42" font-weight="300" fill="#222">CNT-20260819205551</text>
+  <text x="1515" y="65" font-family="Segoe UI,Arial,sans-serif" font-size="19" fill="#536378">✓ Kaydedildi</text>
+  <line x1="95" y1="158" x2="1705" y2="158" stroke="#cfd4d8"/>
+  <text x="110" y="198" font-family="Segoe UI,Arial,sans-serif" font-size="19" fill="#222">Eylemler⌄</text><text x="230" y="198" font-family="Segoe UI,Arial,sans-serif" font-size="19" fill="#222">Otomatikleştir⌄</text>
+  <line x1="95" y1="218" x2="1705" y2="218" stroke="#cfd4d8"/>
+
+  <text x="95" y="262" font-family="Segoe UI,Arial,sans-serif" font-size="25" font-weight="700" fill="#222">General</text><line x1="95" y1="275" x2="1705" y2="275" stroke="#42546a" stroke-width="2"/>
+  <g font-family="Segoe UI,Arial,sans-serif" font-size="18" fill="#536378">
+    <text x="95" y="328">No.</text><text x="920" y="328">Mode</text><text x="95" y="382">Location Code</text><text x="920" y="382">Status</text>
+  </g>
+  <g font-family="Segoe UI,Arial,sans-serif" font-size="18" fill="#222">
+    <rect x="420" y="298" width="390" height="42" fill="#fafafa" stroke="#008b99"/><text x="430" y="326">CNT-20260819205551</text>
+    <rect x="1280" y="298" width="390" height="42" fill="#fafafa" stroke="#8e9aa6"/><text x="1290" y="326">Blind</text>
+    <rect x="420" y="352" width="390" height="42" fill="#fafafa" stroke="#8e9aa6"/><text x="430" y="380">MERKEZDEPO</text>
+    <rect x="1280" y="352" width="390" height="42" fill="#fafafa" stroke="#8e9aa6"/><text x="1290" y="380">In Progress</text>
+  </g>
+
+  <text x="95" y="454" font-family="Segoe UI,Arial,sans-serif" font-size="25" font-weight="700" fill="#222">Sayım Durumu</text><line x1="95" y1="467" x2="1705" y2="467" stroke="#42546a" stroke-width="2"/>
+  <g font-family="Segoe UI,Arial,sans-serif" font-size="18">
+    <text x="95" y="520" fill="#536378">Toplam Satır</text><rect x="420" y="490" width="390" height="42" fill="#eceff1"/><text x="770" y="519" text-anchor="end" fill="#222">856</text>
+    <text x="95" y="572" fill="#536378">Sayılan</text><rect x="420" y="542" width="390" height="42" fill="#eceff1"/><text x="770" y="571" text-anchor="end" fill="#188600">5</text>
+    <text x="920" y="520" fill="#536378">Kalan</text><rect x="1280" y="490" width="390" height="42" fill="#eceff1"/><text x="1635" y="519" text-anchor="end" fill="#b73a36">851</text>
+    <text x="920" y="572" fill="#536378">Farklı Satır</text><rect x="1280" y="542" width="390" height="42" fill="#eceff1"/><text x="1635" y="571" text-anchor="end" fill="#b73a36">2</text>
+  </g>
+
+  <line x1="95" y1="625" x2="1705" y2="625" stroke="#cfd4d8"/><text x="95" y="660" font-family="Segoe UI,Arial,sans-serif" font-size="22" font-weight="700" fill="#42546a">Count Counters</text>
+  <g font-family="Segoe UI,Arial,sans-serif" font-size="17" fill="#536378"><text x="420" y="706">Counter Slot ↑</text><text x="720" y="706">User ID</text><text x="1150" y="706">Assigned DateTime</text></g>
+  <rect x="95" y="720" width="1610" height="48" fill="#fff" stroke="#cfd4d8"/><text x="125" y="751" font-family="Segoe UI,Arial,sans-serif" font-size="20" fill="#222">→</text><text x="515" y="751" font-family="Segoe UI,Arial,sans-serif" font-size="18" fill="#222">0</text>
+  <rect x="95" y="780" width="1610" height="52" rx="5" fill="#fff2e7" stroke="#efc4a5"/><text x="120" y="813" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="700" fill="#914816">Slot 0 + boş User ID = kullanıcı ataması yapılmamış. Sayım başlamadan önce slot 1/2/3 ve kullanıcı doldurulmalıdır.</text>
+
+  <line x1="95" y1="866" x2="1705" y2="866" stroke="#cfd4d8"/><text x="95" y="902" font-family="Segoe UI,Arial,sans-serif" font-size="22" font-weight="700" fill="#42546a">Count Sheet Lines</text>
+  <g font-family="Segoe UI,Arial,sans-serif" font-size="15" fill="#536378"><text x="125" y="940">Item No.</text><text x="315" y="940">Description</text><text x="850" y="940">Bin Code</text><text x="1045" y="940">System Qty</text><text x="1245" y="940">Counted Qty 1</text><text x="1495" y="940">Counted Qty 2</text></g>
+  <rect x="95" y="952" width="1610" height="45" fill="#f7fbf7" stroke="#cfd4d8"/>
+  <g font-family="Segoe UI,Arial,sans-serif" font-size="16"><text x="125" y="981" fill="#167600">AB.00005</text><text x="315" y="981" fill="#167600">BARDAK- CAM BUZLU YEŞİL...</text><text x="850" y="981" fill="#167600">A.A01.11</text><text x="1045" y="981" fill="#167600">1,864.00</text><text x="1245" y="981" fill="#167600">1,864.00</text><text x="1495" y="981" fill="#222">0.00</text></g>
+</svg>

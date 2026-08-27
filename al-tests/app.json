@@ -1,0 +1,25 @@
+{
+  "id": "515fe9e0-7e77-4fe7-9395-04dc142206a5",
+  "name": "BCWMSApp Tests",
+  "publisher": "DynOps",
+  "version": "0.1.0.0",
+  "platform": "24.0.0.0",
+  "application": "24.0.0.0",
+  "runtime": "13.0",
+  "idRanges": [
+    { "from": 72100, "to": 72199 },
+    { "from": 72490, "to": 72499 }
+  ],
+  "features": [
+    "TranslationFile",
+    "NoImplicitWith"
+  ],
+  "dependencies": [
+    {
+      "id": "984e25aa-07c2-4401-babc-88f975303a52",
+      "name": "BCWMSApp",
+      "publisher": "DynamicsOps",
+      "version": "1.0.1.0"
+    }
+  ]
+}

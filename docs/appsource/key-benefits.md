@@ -1,0 +1,5 @@
+- License plate inventory control across receiving, movement, production, assembly, and shipping.
+- Scan-first Android workflows reduce warehouse keyboard entry and posting errors.
+- 50+ Business Central API endpoints support contract-tested integrations and mobile sync.
+- Embedded supervisor views expose pick boards, license plate trees, and warehouse KPIs.
+- Multi-tenant SaaS-ready architecture separates admin, user, and view-only permissions.

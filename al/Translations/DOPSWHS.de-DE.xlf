@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file datatype="xml" source-language="en-US" target-language="de-DE" original="BCWMSApp">
+    <body>
+      <trans-unit id="CountSheet"><source>Count Sheet</source><target>Zählblatt</target></trans-unit>
+      <trans-unit id="CountSheets"><source>Count Sheets</source><target>Zählblätter</target></trans-unit>
+      <trans-unit id="Blind"><source>Blind</source><target>Blind</target></trans-unit>
+      <trans-unit id="Visible"><source>Visible</source><target>Sichtbar</target></trans-unit>
+      <trans-unit id="Recount"><source>Recount</source><target>Nachzählung</target></trans-unit>
+      <trans-unit id="Variance"><source>Variance</source><target>Abweichung</target></trans-unit>
+      <trans-unit id="Posted"><source>Posted</source><target>Gebucht</target></trans-unit>
+      <trans-unit id="WarehouseManager"><source>Warehouse Manager</source><target>Lagerleiter</target></trans-unit>
+      <trans-unit id="CountMode"><source>Count Mode</source><target>Zählmodus</target></trans-unit>
+      <trans-unit id="CountSheetLine"><source>Count Sheet Line</source><target>Zählblattzeile</target></trans-unit>
+      <trans-unit id="CountCounter"><source>Count Counter</source><target>Zähler</target></trans-unit>
+      <trans-unit id="RecountRequired"><source>Recount Required</source><target>Nachzählung erforderlich</target></trans-unit>
+      <trans-unit id="CountVarianceReview"><source>Count Variance Review</source><target>Zähldifferenzprüfung</target></trans-unit>
+      <trans-unit id="SourceCountSheet"><source>Source Count Sheet</source><target>Quell-Zählblatt</target></trans-unit>
+      <trans-unit id="OpenReceipts"><source>Open Receipts</source><target>Offene Wareneingänge</target></trans-unit>
+      <trans-unit id="OpenPicks"><source>Open Picks</source><target>Offene Kommissionierungen</target></trans-unit>
+      <trans-unit id="OpenShipments"><source>Open Shipments</source><target>Offene Lieferungen</target></trans-unit>
+      <trans-unit id="LatePicks"><source>Late Picks</source><target>Verspätete Kommissionierungen</target></trans-unit>
+      <trans-unit id="UnbuiltLPs"><source>Unbuilt LPs</source><target>Nicht erstellte Ladungsträger</target></trans-unit>
+      <trans-unit id="CountDiscrepancies"><source>Count Discrepancies</source><target>Zähldifferenzen</target></trans-unit>
+      <trans-unit id="DevicesOnline"><source>Devices Online</source><target>Geräte online</target></trans-unit>
+      <trans-unit id="MigrateFromWI"><source>Migrate from WI</source><target>Aus WI migrieren</target></trans-unit>
+      <trans-unit id="PreflightCheck"><source>Preflight Check</source><target>Vorprüfung</target></trans-unit>
+      <trans-unit id="DryRun"><source>Dry Run</source><target>Testlauf</target></trans-unit>
+      <trans-unit id="Cutover"><source>Cutover</source><target>Umstellung</target></trans-unit>
+    </body>
+  </file>
+</xliff>

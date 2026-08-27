@@ -1,0 +1,36 @@
+{
+  "id": "984e25aa-07c2-4401-babc-88f975303a52",
+  "publisher": "DynamicsOps",
+  "name": "BCWMSApp",
+  "version": "1.14.0.55",
+  "brief": "Advanced Warehouse Management System for Business Central SaaS",
+  "description": "Advanced warehouse management foundation for Business Central SaaS.",
+  "privacyStatement": "https://dynops.com/privacy",
+  "EULA": "https://dynops.com/eula",
+  "help": "https://docs.dynops.com/bcwmsapp",
+  "url": "https://dynops.com",
+  "logo": "",
+  "dependencies": [],
+  "screenshots": [],
+  "platform": "24.0.0.0",
+  "application": "24.0.0.0",
+  "idRanges": [
+    { "from": 72000, "to": 72099 },
+    { "from": 72200, "to": 72489 }
+  ],
+  "features": [
+    "TranslationFile",
+    "NoImplicitWith"
+  ],
+  "supportedLocales": [
+    "en-US",
+    "tr-TR",
+    "de-DE"
+  ],
+  "runtime": "13.0",
+  "resourceExposurePolicy": {
+    "allowDebugging": false,
+    "allowDownloadingSource": false,
+    "includeSourceInSymbolFile": false
+  }
+}

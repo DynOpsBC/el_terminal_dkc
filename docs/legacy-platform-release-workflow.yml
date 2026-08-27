@@ -1,0 +1,338 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  preflight:
+    name: Preflight — secrets present
+    runs-on: ubuntu-latest
+    steps:
+      - name: Required secret check
+        env:
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          AZURE_STATIC_WEB_APPS_API_TOKEN_WEB: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_WEB }}
+          AZURE_STATIC_WEB_APPS_API_TOKEN_PORTAL: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PORTAL }}
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          PORTAL_AAD_CLIENT_ID: ${{ secrets.PORTAL_AAD_CLIENT_ID }}
+          PORTAL_AAD_AUTHORITY: ${{ secrets.PORTAL_AAD_AUTHORITY }}
+          PORTAL_API_BASE: ${{ secrets.PORTAL_API_BASE }}
+          PORTAL_LICENSING_URL: ${{ secrets.PORTAL_LICENSING_URL }}
+        run: |
+          # Public-tag release MUST have every secret set; missing secrets
+          # used to be silently swallowed via `|| echo`, leading to a "green"
+          # release that didn't actually publish anything. Fail-fast here.
+          missing=()
+          for name in AZURE_CLIENT_ID AZURE_TENANT_ID AZURE_SUBSCRIPTION_ID \
+                      AZURE_STATIC_WEB_APPS_API_TOKEN_WEB AZURE_STATIC_WEB_APPS_API_TOKEN_PORTAL \
+                      ANDROID_KEYSTORE_BASE64 ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_PASSWORD \
+                      ANDROID_KEY_ALIAS PLAY_SERVICE_ACCOUNT_JSON \
+                      PORTAL_AAD_CLIENT_ID PORTAL_AAD_AUTHORITY \
+                      PORTAL_API_BASE PORTAL_LICENSING_URL; do
+            if [ -z "${!name}" ]; then missing+=("$name"); fi
+          done
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "::error::Release blocked — missing secrets: ${missing[*]}"
+            exit 1
+          fi
+
+  resolve:
+    name: Resolve version
+    runs-on: ubuntu-latest
+    needs: preflight
+    outputs:
+      version: ${{ steps.tag.outputs.version }}
+      al_version: ${{ steps.tag.outputs.al_version }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Resolve tag version
+        id: tag
+        env:
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          TAG="${REF_NAME#v}"
+          # Strict semver allow-list — closes workflow command injection via
+          # crafted tag names like `v1.0$(rm -rf /)`. Anything that doesn't
+          # match `MAJOR.MINOR.PATCH[.BUILD]` (digits only) fails the release.
+          if [[ ! "$TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then
+            echo "::error::Tag '$REF_NAME' is not in MAJOR.MINOR.PATCH[.BUILD] form. Refusing to release."
+            exit 1
+          fi
+          AL_VER="$TAG"
+          if [[ ! "$TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            AL_VER="${TAG}.0"
+          fi
+          echo "version=$TAG" >> "$GITHUB_OUTPUT"
+          echo "al_version=$AL_VER" >> "$GITHUB_OUTPUT"
+          {
+            echo "## Release $TAG"
+            echo "- Web/Android version: \`$TAG\`"
+            echo "- AL .app version: \`$AL_VER\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  al-package:
+    name: AL .app artifact (Windows)
+    runs-on: windows-latest
+    needs: resolve
+    steps:
+      - uses: actions/checkout@v7
+      - name: Skip when no ALTOOL on runner
+        run: |
+          if (-not (Test-Path "C:\Users\runneradmin\.vscode\extensions\ms-dynamics-smb.al-*")) {
+            echo "ALTOOL not preinstalled — see al-build.yml for full BC compile pipeline."
+          }
+        shell: pwsh
+      - name: Bundle latest .app if released artifact exists
+        id: bundle
+        shell: pwsh
+        run: |
+          if (Test-Path "releases") {
+            $app = Get-ChildItem releases -Filter "bcwmsapp-*.app" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+            if ($app) {
+              Copy-Item $app.FullName "bcwmsapp-${{ needs.resolve.outputs.al_version }}.app"
+              "::set-output name=app::bcwmsapp-${{ needs.resolve.outputs.al_version }}.app"
+            }
+          }
+      - uses: actions/upload-artifact@v7
+        if: hashFiles('bcwmsapp-*.app') != ''
+        with:
+          name: bcwmsapp-app
+          path: bcwmsapp-*.app
+          retention-days: 30
+
+  licensing-deploy:
+    name: Licensing service deploy
+    runs-on: ubuntu-latest
+    needs: resolve
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with: { node-version: "20" }
+      - uses: pnpm/action-setup@v6
+        with: { version: 9 }
+      - name: Build
+        working-directory: licensing-service
+        run: |
+          pnpm install --frozen-lockfile=false
+          pnpm build
+          pnpm test
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Deploy Function App
+        working-directory: licensing-service
+        run: |
+          # `--strict` causes core-tools to error on publish failure instead of warning.
+          npx --yes @azure/functions-core-tools@4 azure functionapp publish bcwms-licensing-func --typescript
+
+  web-deploy:
+    name: Web SaaS bundle deploy
+    runs-on: ubuntu-latest
+    needs: [resolve, android-publish]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with: { node-version: "20" }
+      - uses: pnpm/action-setup@v6
+        with: { version: 9 }
+      - name: Build SaaS bundle
+        working-directory: web
+        run: |
+          pnpm install --frozen-lockfile=false
+          pnpm typecheck
+          pnpm build:saas
+      - name: Pull Android manifest from android-publish artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: android-release
+          path: android-manifest
+      - name: Embed releases/android/latest.json into SaaS bundle
+        run: |
+          # UpdateModule.kt reads BuildConfig.UPDATE_BASE_URL/releases/android/latest.json.
+          # Ship the manifest alongside the SaaS bundle so sideload clients can
+          # reach it from https://app.bcwms.dynops.com/releases/android/latest.json.
+          mkdir -p web/dist/releases/android
+          if [ -f android-manifest/latest.json ]; then
+            cp android-manifest/latest.json web/dist/releases/android/latest.json
+          else
+            echo "::warning::android-manifest/latest.json missing — sideload update path will 404"
+          fi
+      - name: Deploy Azure Static Web App
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_WEB }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: "upload"
+          app_location: "web/dist"
+          skip_app_build: true
+      - uses: actions/upload-artifact@v7
+        with:
+          name: web-saas-bundle
+          path: web/dist
+          retention-days: 30
+
+  customer-portal-deploy:
+    name: Customer Portal deploy
+    runs-on: ubuntu-latest
+    needs: resolve
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with: { node-version: "20" }
+      - uses: pnpm/action-setup@v6
+        with: { version: 9 }
+      - name: Build
+        working-directory: customer-portal
+        env:
+          # MSAL.js refuses to bootstrap with an empty clientId, so the build
+          # must inject the AAD app registration values. PORTAL_LICENSING_URL
+          # tells the SPA where to hit the licensing-service for /license/*
+          # endpoints (Static Web App `api/` only owns releases + trigger-update).
+          VITE_PORTAL_CLIENT_ID: ${{ secrets.PORTAL_AAD_CLIENT_ID }}
+          VITE_PORTAL_AUTHORITY: ${{ secrets.PORTAL_AAD_AUTHORITY }}
+          VITE_PORTAL_API_BASE: ${{ secrets.PORTAL_API_BASE }}
+          VITE_PORTAL_LICENSING_URL: ${{ secrets.PORTAL_LICENSING_URL }}
+        run: |
+          pnpm install --frozen-lockfile=false
+          pnpm typecheck
+          pnpm build
+      - name: Build api
+        working-directory: customer-portal/api
+        run: |
+          pnpm install --frozen-lockfile=false
+          pnpm build
+      - name: Deploy Azure Static Web App
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PORTAL }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: "upload"
+          app_location: "customer-portal/dist"
+          api_location: "customer-portal/api"
+          skip_app_build: true
+
+  android-publish:
+    name: Android Play Closed Track + APK
+    runs-on: ubuntu-latest
+    needs: resolve
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v5
+        with:
+          distribution: "temurin"
+          java-version: "21"
+      - name: Inject keystore + service account
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+        run: |
+          mkdir -p android/play/keystore
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > android/play/keystore/upload-keystore.jks
+          cat > android/play/keystore/keystore.properties <<EOF
+          storeFile=play/keystore/upload-keystore.jks
+          storePassword=$KEYSTORE_PASSWORD
+          keyAlias=$KEY_ALIAS
+          keyPassword=$KEY_PASSWORD
+          EOF
+          if [ -n "$PLAY_SERVICE_ACCOUNT_JSON" ]; then
+            echo "$PLAY_SERVICE_ACCOUNT_JSON" > android/play/play-service-account.json
+          fi
+      - name: Assemble signed BADE release APK
+        working-directory: android
+        env:
+          RELEASE_VERSION: ${{ needs.resolve.outputs.version }}
+        run: |
+          # Workflow run_number repo içinde sürekli artar; mevcut saha
+          # versionCode'larından yüksek ve her yayında monoton bir sayı üretir.
+          RELEASE_VERSION_CODE=$((100000 + GITHUB_RUN_NUMBER))
+          echo "RELEASE_VERSION_CODE=$RELEASE_VERSION_CODE" >> "$GITHUB_ENV"
+          echo "RELEASE_VERSION_NAME=$RELEASE_VERSION" >> "$GITHUB_ENV"
+          ./gradlew :app:assembleBadeRelease \
+            -PreleaseVersionCode="$RELEASE_VERSION_CODE" \
+            -PreleaseVersionName="$RELEASE_VERSION"
+      - name: Publish to Play Closed Testing
+        working-directory: android
+        run: |
+          ./gradlew :app:publishReleaseBundle -PwithPlayPublisher \
+            -PreleaseVersionCode="$RELEASE_VERSION_CODE" \
+            -PreleaseVersionName="$RELEASE_VERSION_NAME"
+      - name: Compute APK SHA-256 + manifest
+        env:
+          RELEASE_VERSION: ${{ needs.resolve.outputs.version }}
+          REPO: ${{ github.repository }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          # Inputs are passed via env so the shell never expands attacker-controlled
+          # GitHub context interpolations directly into the script.
+          APK="android/app/build/outputs/apk/bade/release/app-bade-release.apk"
+          if [ ! -f "$APK" ]; then
+            echo "::error::Signed BADE release APK not found: $APK"
+            exit 1
+          fi
+          RELEASE_APK="android/bcwms-${RELEASE_VERSION}.apk"
+          cp "$APK" "$RELEASE_APK"
+          SHA=$(sha256sum "$RELEASE_APK" | awk '{print $1}')
+          jq -n \
+            --arg vc "$RELEASE_VERSION_CODE" \
+            --arg vn "$RELEASE_VERSION" \
+            --arg repo "$REPO" \
+            --arg ref "$REF_NAME" \
+            --arg sha "$SHA" \
+            '{
+              versionCode: ($vc | tonumber),
+              versionName: $vn,
+              apkUrl: ("https://github.com/" + $repo + "/releases/download/" + $ref + "/bcwms-" + $vn + ".apk"),
+              sha256: $sha,
+              releaseNotes: ("v" + $vn + " — see GitHub Release notes")
+            }' > android/latest.json
+      - uses: actions/upload-artifact@v7
+        with:
+          name: android-release
+          path: |
+            android/bcwms-*.apk
+            android/app/build/outputs/bundle/release/*.aab
+            android/latest.json
+          retention-days: 30
+
+  release-notes:
+    name: GitHub Release
+    runs-on: ubuntu-latest
+    needs: [resolve, al-package, licensing-deploy, web-deploy, customer-portal-deploy, android-publish]
+    # Intentionally NOT `if: always()` — if any upstream job fails the release
+    # asset publication is blocked. A "green" tag must mean every deploy
+    # succeeded.
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+      - name: Flatten assets
+        run: |
+          mkdir -p assets
+          find release-assets -type f \( -name "*.app" -o -name "*.apk" -o -name "*.aab" -o -name "latest.json" \) -exec cp {} assets/ \;
+          ls -la assets/ || true
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: assets/*
+          generate_release_notes: true
+          body_path: docs/release-roadmap.md
+          fail_on_unmatched_files: false

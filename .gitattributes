@@ -1,0 +1,8 @@
+# Binary artifacts — diff/merge'i disable, satır sonu dönüşümü uygulama.
+*.apk binary
+*.aab binary
+*.app binary
+
+# AL packaged extension (.app içeride zip)
+releases/*.app binary
+releases/android/*.apk binary

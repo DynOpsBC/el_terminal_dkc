@@ -1,0 +1,34 @@
+{
+  "platform": {
+    "apiRuntime": "node:20"
+  },
+  "navigationFallback": {
+    "rewrite": "/index.html"
+  },
+  "auth": {
+    "identityProviders": {
+      "azureActiveDirectory": {
+        "registration": {
+          "openIdIssuer": "https://login.microsoftonline.com/common/v2.0",
+          "clientIdSettingName": "AZURE_CLIENT_ID"
+        },
+        "login": { "loginParameters": ["response_type=code"] }
+      }
+    }
+  },
+  "routes": [
+    { "route": "/api/license/me", "allowedRoles": ["anonymous", "authenticated"] },
+    { "route": "/api/releases", "allowedRoles": ["anonymous", "authenticated"] },
+    { "route": "/api/bc/trigger-update", "allowedRoles": ["authenticated"] },
+    { "route": "/api/license/issue", "allowedRoles": ["authenticated"] }
+  ],
+  "responseOverrides": {
+    "404": { "rewrite": "/index.html" }
+  },
+  "globalHeaders": {
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Content-Security-Policy": "default-src 'self'; script-src 'self'; connect-src 'self' https://login.microsoftonline.com https://api.businesscentral.dynamics.com https://api.github.com; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com"
+  }
+}

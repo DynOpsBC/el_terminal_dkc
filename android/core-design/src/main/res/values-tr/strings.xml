@@ -1,0 +1,15 @@
+<resources>
+    <string name="count_sheet_title">Sayım Fişleri</string>
+    <string name="count_blind_mode">Kör Sayım</string>
+    <string name="count_sheet_no">Fiş No.</string>
+    <string name="count_item_no">Ürün No.</string>
+    <string name="count_bin_code">Bin Kodu</string>
+    <string name="count_lp_no">Sevk Plakası No.</string>
+    <string name="count_system_qty">Sistem Miktarı</string>
+    <string name="count_counted_qty">Sayılan Miktar</string>
+    <string name="count_variance">Fark</string>
+    <string name="count_recount_required">Yeniden Sayım Gerekli</string>
+    <string name="count_post">Sayım Fişini Deftere Naklet</string>
+    <string name="count_start_recount">Yeniden Sayımı Başlat</string>
+    <string name="count_reveal_qty">Sistem Miktarını Göster</string>
+</resources>

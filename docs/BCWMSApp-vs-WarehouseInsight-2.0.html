@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>BCWMSApp vs Warehouse Insight 2.0 — Özellik Karşılaştırması</title>
+<style>
+  @page { size: A4; margin: 15mm 12mm 16mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #1f2937; font-size: 10.5px; line-height: 1.45; -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  h1 { font-size: 26px; margin: 0 0 4px; color: #0f172a; letter-spacing: -0.3px; }
+  h2 { font-size: 15px; margin: 20px 0 6px; color: #0f172a; padding-bottom: 4px; border-bottom: 2px solid #0f172a; }
+  h3 { font-size: 12px; margin: 12px 0 4px; color: #3730a3; }
+  p { margin: 5px 0; }
+  .muted { color: #6b7280; }
+  .small { font-size: 9.5px; }
+
+  /* Cover */
+  .cover { padding: 26px 4px 0; border-bottom: 4px solid #6C5CE7; margin-bottom: 14px; break-after: page; page-break-after: always; }
+  .cover .sub { font-size: 13px; color: #4b5563; margin-top: 2px; }
+  .badgerow { margin: 14px 0 8px; }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 10px; font-weight: 700; margin-right: 6px; }
+  .b1 { background:#ede9fe; color:#5b21b6; } .b2 { background:#dcfce7; color:#166534; } .b3 { background:#e0f2fe; color:#075985; }
+  .meta { margin-top: 16px; }
+  .meta table { width: 100%; border-collapse: collapse; }
+  .meta td { padding: 4px 6px; border-bottom: 1px solid #eef2f7; vertical-align: top; }
+  .meta td:first-child { width: 150px; color:#6b7280; font-weight:600; }
+  .notebox { margin-top: 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #6C5CE7; border-radius: 6px; padding: 10px 12px; }
+
+  /* Score cards */
+  .scorewrap { display: flex; gap: 10px; margin: 10px 0 6px; }
+  .score { flex: 1; border-radius: 10px; padding: 12px 10px; text-align: center; color: #fff; }
+  .score .n { font-size: 26px; font-weight: 800; line-height: 1; }
+  .score .l { font-size: 10px; margin-top: 4px; opacity: .95; text-transform: uppercase; letter-spacing: .5px; }
+  .sc-var { background: #16a34a; } .sc-partial { background: #d97706; } .sc-none { background: #dc2626; } .sc-total { background: #334155; }
+
+  /* Legend */
+  .legend { margin: 6px 0 14px; font-size: 9.5px; }
+  .chip { display:inline-block; padding:2px 8px; border-radius:5px; font-weight:700; margin-right:6px; }
+  .s-var { background:#dcfce7; color:#166534; } .s-partial { background:#fef9c3; color:#854d0e; } .s-none { background:#fee2e2; color:#991b1b; }
+
+  /* Tables */
+  table.cmp { width: 100%; border-collapse: collapse; margin: 4px 0 10px; }
+  table.cmp thead { display: table-header-group; }
+  table.cmp th { background:#0f172a; color:#fff; text-align:left; padding:6px 8px; font-size:9.5px; font-weight:700; }
+  table.cmp td { padding:5px 8px; border-bottom:1px solid #e5e7eb; vertical-align: top; }
+  table.cmp tr { break-inside: avoid; page-break-inside: avoid; }
+  table.cmp .feat { width: 44%; font-weight:600; color:#111827; }
+  table.cmp .st  { width: 11%; text-align:center; }
+  table.cmp .nt  { width: 45%; color:#374151; }
+  .status { display:inline-block; min-width: 44px; text-align:center; padding:2px 6px; border-radius:5px; font-weight:800; font-size:9.5px; }
+  .grp td { background:#eef2ff; color:#3730a3; font-weight:800; font-size:10.5px; padding:6px 8px; letter-spacing:.2px; }
+  code.f { background:#f1f5f9; color:#0f172a; padding:0 3px; border-radius:3px; font-size:9px; }
+
+  .section { break-inside: avoid-page; }
+  ul.pros { margin: 6px 0; padding-left: 18px; }
+  ul.pros li { margin: 4px 0; }
+  .foot { margin-top: 18px; padding-top: 8px; border-top: 1px solid #e5e7eb; color:#94a3b8; font-size: 9px; }
+</style>
+</head>
+<body>
+
+<!-- ============ KAPAK ============ -->
+<div class="cover">
+  <h1>Özellik Karşılaştırması</h1>
+  <div class="sub"><b>BCWMSApp (DynOps)</b> &nbsp;⟷&nbsp; <b>Warehouse Insight 2.0 (Insight Works)</b></div>
+  <div class="badgerow">
+    <span class="badge b1">El Terminali WMS</span>
+    <span class="badge b2">Business Central</span>
+    <span class="badge b3">Parite Boşluk Analizi</span>
+  </div>
+
+  <div class="meta">
+    <table>
+      <tr><td>Amaç</td><td>Müşterinin hâlâ kullandığı <b>Warehouse Insight 2.0</b> ile bizim <b>BCWMSApp</b> uygulamamızı özellik bazında karşılaştırmak; Warehouse Insight'ta olup bizde eksik/kısmi olan yetenekleri görünür kılmak.</td></tr>
+      <tr><td>Kaynak (referans)</td><td>Warehouse Insight 2.0 — User Guide (Insight Works, 2016/2019, NAV tabanlı el-terminali)</td></tr>
+      <tr><td>Hedef (bizim ürün)</td><td>BCWMSApp — DynOps · AL prefix <code class="f">DOPSWHS</code> · v1.10.x · mobil <code class="f">com.dynops.bcwms</code> · Business Central <b>SaaS</b> (bulut, OData v2 API)</td></tr>
+      <tr><td>Yöntem</td><td>Warehouse Insight kılavuzundaki özellikler tek tek çıkarıldı; her biri BCWMSApp kaynak kodunda (AL API sayfaları + yönetim codeunit'leri + Android feature modülleri) <b>doğrudan aranarak</b> Var / Kısmi / Yok olarak işaretlendi.</td></tr>
+      <tr><td>Tarih</td><td>1 Temmuz 2026</td></tr>
+    </table>
+  </div>
+
+  <div class="notebox">
+    <b>Okuma anahtarı.</b>
+    <span class="chip s-var">VAR</span> özellik uygulamamızda mevcut ·
+    <span class="chip s-partial">KISMİ</span> temel yetenek var ama Warehouse Insight'taki kadar kapsamlı değil ·
+    <span class="chip s-none">YOK</span> özellik henüz uygulamamızda bulunmuyor. <br>
+    Not: Warehouse Insight 2.0 NAV/service-tier mimarisi üzerine kuruludur; BCWMSApp doğrudan BC SaaS bulut API'leri üzerine kuruludur. Bu yüzden bazı yetenekler (ör. login modeli, yazdırma) bizde <b>farklı ama denk/daha modern</b> biçimde vardır — bunlar "Var (farklı model)" diye işaretlendi.
+  </div>
+</div>
+
+<!-- ============ ÖZET SKOR ============ -->
+<h2>Özet Skor</h2>
+<p class="muted small">Warehouse Insight kılavuzundan çıkarılan <b>47</b> özellik/alt-özellik değerlendirildi.</p>
+<div class="scorewrap">
+  <div class="score sc-var"><div class="n">17</div><div class="l">Var</div></div>
+  <div class="score sc-partial"><div class="n">11</div><div class="l">Kısmi</div></div>
+  <div class="score sc-none"><div class="n">19</div><div class="l">Yok</div></div>
+  <div class="score sc-total"><div class="n">30</div><div class="l">Boşluk (Yok+Kısmi)</div></div>
+</div>
+<p class="small">
+  <b>Yorum:</b> Çekirdek depo iş akışları (Mal Kabul, Put-Away, Toplama, Sevkiyat, Sayım, Üretim, Montaj, License Plate) BCWMSApp'te <b>aksiyon-yetenekli ve postlayabilir</b> durumda — bu modüllerde parite güçlü.
+  Ana boşluklar iki başlıkta yoğunlaşıyor: <b>(1) Sorgu/görünürlük</b> (item resmi, son hareketler, Whse. Entries, Lot/Seri seçici, item/bin etiketi) ve
+  <b>(2) Verimlilik/konfor katmanı</b> (Totes'a toplama, Card/Grid görünüm, Hide/Show tamamlananlar, Scratchpad offline, satıcı barkodu eşleme, oto lot/seri, Quantity Extensions, Auto-post/Auto-split, Wave picking, konfigüre edilebilir menü).
+  Buna karşılık bizde Warehouse Insight'ta <b>hiç olmayan</b> güçlü özellikler var (bkz. son bölüm).
+</p>
+
+<!-- ============ MODÜL TABLOSU ============ -->
+<h2>1. Modül Bazlı Karşılaştırma</h2>
+<table class="cmp">
+  <thead>
+    <tr><th class="feat">Warehouse Insight Özelliği</th><th class="st">Bizde</th><th class="nt">Not / Kanıt</th></tr>
+  </thead>
+  <tbody>
+
+    <tr class="grp"><td colspan="3">Item Inquiry (Ürün Sorgu)</td></tr>
+    <tr><td class="feat">Stok miktarı + bin bazında döküm</td><td class="st"><span class="status s-var">VAR</span></td><td class="nt">ItemApi (inventory/on-order) + BinContentApi</td></tr>
+    <tr><td class="feat">Ürün resmi görüntüleme (Show Picture)</td><td class="st"><span class="status s-none">YOK</span></td><td class="nt">Mobil sorguda resim yok</td></tr>
+    <tr><td class="feat">Son hareketler / işlem geçmişi (Recent Transactions)</td><td class="st"><span class="status s-none">YOK</span></td><td class="nt">Ürün hareket geçmişi ekranı yok</td></tr>
+    <tr><td class="feat">Stoktaki Lot/Seri seçici (Choose LN/SN)</td><td class="st"><span class="status s-none">YOK</span></td><td class="nt">Lot/seri serbest metin girilir; mevcut listeden seçim yok</td></tr>
+    <tr><td class="feat">Ürün etiketi baskısı</td><td class="st"><span class="status s-partial">KISMİ</span></td><td class="nt">Yazdırma altyapısı güçlü ama sadece LP etiketi basılıyor; item etiketi akışı yok</td></tr>
+
+    <tr class="grp"><td colspan="3">Bin Inquiry (Raf Sorgu)</td></tr>
+    <tr><td class="feat">Bin içeriği + içindeki License Plate'ler</td><td class="st"><span class="status s-var">VAR</span></td><td class="nt">BinContentApi + BinLpTree (LP→ürün ağacı)</td></tr>
+    <tr><td class="feat">Whse. Entries — bin hareket geçmişi</td><td class="st"><span class="status s-none">YOK</span></td><td class="nt">Depo giriş/çıkış geçmişi görünümü yok</td></tr>
+    <tr><td class="feat">Bin etiketi baskısı</td><td class="st"><span class="status s-none">YOK</span></td><td class="nt">—</td></tr>
+
+    <tr class="grp"><td colspan="3">Sayım (Inventory Count)</td></tr>
+    <tr><td class="feat">Gelişmiş sayım: çok sayfa, 3 sayıcı, kör sayım, varyans, recount, post</td><td class="st"><span class="status s-var">VAR</span></td><td class="nt">CountApi/CountMgmt — çoğunluk oylaması + recount validasyonu</td></tr>
+    <tr><td class="feat">Basic Count (ayrı Fiziksel Envanter Yevmiyesi ekranı)</td><td class="st"><span class="status s-partial">KISMİ</span></td><td class="nt">Ayrı "Basic" akışı yok; Count Sheet doğrudan fiziksel envantere postluyor</td></tr>
+
+    <tr class="grp"><td colspan="3">Mal Kabul (Receiving)</td></tr>
+    <tr><td class="feat">PO / Transfer / Whse Receipt + direkt PO + LP + item tracking + Post</td><td class="st"><span class="status s-var">VAR</span></td><td class="nt">ReceiptApi + PurchSourceApi (iki sekme: Whse Receipt / doğrudan PO)</td></tr>
+    <tr><td class="feat">Satıcı barkodu çapraz-referans eşleme ("bilinmeyen barkodu kullanıcıya sor")</td><td class="st"><span class="status s-none">YOK</span></td><td class="nt">Bilinmeyen barkodu item'a eşleyen diyalog/tablo yok</td></tr>
+    <tr><td class="feat">Otomatik Lot/Seri numarası üretimi</td><td class="st"><span class="status s-none">YOK</span></td><td class="nt">Lot/seri elle girilir</td></tr>
+    <tr><td class="feat">Etiket senaryoları: miktar girişinde / ön-baskı / Post &amp; Print</td><td class="st"><span class="status s-partial">KISMİ</span></td><td class="nt">Yalnızca LP kapatınca (Stop LP) etiket basılıyor</td></tr>
+
+    <tr class="grp"><td colspan="3">Put-Away (Yerleştirme)</td></tr>
+    <tr><td class="feat">Yönlendirilmiş yerleştirme (suggestBin) + Register + Split + Bin değiştir</td><td class="st"><span class="status s-var">VAR</span></td><td class="nt">PutAwayApi + DirectedPutAway (zone/bin rank, kapasite, karışım kuralı)</td></tr>
+    <tr><td class="feat">Envanter put-away + Take/Place geçişi + Auto-split / Auto-post</td><td class="st"><span class="status s-partial">KISMİ</span></td><td class="nt">Warehouse put-away var; envanter put-away, take/place, otomasyon ayarları yok</td></tr>
+
+    <tr class="grp"><td colspan="3">Hareket (Movement)</td></tr>
+    <tr><td class="feat">Ad-hoc bin-to-bin + License Plate taşıma</td><td class="st"><span class="status s-var">VAR</span></td><td class="nt">MovementOps.adHoc / MovementMgmt.AdHocMove</td></tr>
+    <tr><td class="feat">Ad-hoc: farklı LOKASYONA taşıma</td><td class="st"><span class="status s-none">YOK</span></td><td class="nt"><code class="f">adHoc(fromBin,toBin,item,lp,qty,userId)</code> — hedef lokasyon parametresi yok; tek lokasyon içi</td></tr>
+    <tr><td class="feat">Ad-hoc: satır kopyala (Copy Line)</td><td class="st"><span class="status s-partial">KISMİ</span></td><td class="nt">Aynı kalemi tekrar taramak gerekir</td></tr>
+    <tr><td class="feat">Yönlendirilmiş hareket belgesi → Register</td><td class="st"><span class="status s-var">VAR</span></td><td class="nt">movements.register + DirectedMoveScreen</td></tr>
+
+    <tr class="grp"><td colspan="3">Toplama (Picking)</td></tr>
+    <tr><td class="feat">Pick-to-LP + Mark Short + Reassign + Register + Take/Place + Scan&amp;Verify</td><td class="st"><span class="status s-var">VAR</span></td><td class="nt">PickApi/PickMgmt (SSCC'li shipping LP; QC-block guard)</td></tr>
+    <tr><td class="feat">Totes'a toplama (Assign Totes)</td><td class="st"><span class="status s-none">YOK</span></td><td class="nt">Tote kavramı yok; konsolidasyon LP üzerinden</td></tr>
+    <tr><td class="feat">Wave picking / Pick sorting / Override blank bins</td><td class="st"><span class="status s-none">YOK</span></td><td class="nt">Dalga/rota sıralama ve boş-bin override yok</td></tr>
+    <tr><td class="feat">Auto-post / Auto-split ayarı</td><td class="st"><span class="status s-none">YOK</span></td><td class="nt">Register/Split elle yapılır</td></tr>
+
+    <tr class="grp"><td colspan="3">Sevkiyat (Shipping)</td></tr>
+    <tr><td class="feat">SO / Transfer / Whse Shipment + LP + Post + Packing slip + Invoice</td><td class="st"><span class="status s-var">VAR</span></td><td class="nt">ShipmentApi + SalesSourceApi (auto-release + SSCC + print job)</td></tr>
+
+    <tr class="grp"><td colspan="3">Üretim (Production)</td></tr>
+    <tr><td class="feat">Sarfiyat: bileşen sarfı + LP ile sarf + Show Usage</td><td class="st"><span class="status s-var">VAR</span></td><td class="nt">ConsumptionApi + mobil Show Usage menüsü</td></tr>
+    <tr><td class="feat">BOM Enforcement modları (None / Item / Quantity)</td><td class="st"><span class="status s-none">YOK</span></td><td class="nt">BOM'a göre kısıtlama modları yok</td></tr>
+    <tr><td class="feat">Consumption Entries ara tablosu + Transfer</td><td class="st"><span class="status s-none">YOK</span></td><td class="nt">Doğrudan postluyor; gözden geçirme için staging yok</td></tr>
+    <tr><td class="feat">Output: miktar/fire/süre + çıktı için yeni LP</td><td class="st"><span class="status s-var">VAR</span></td><td class="nt">OutputApi.report (scrap + runtime + new LP)</td></tr>
+    <tr><td class="feat">Output: yalnız son operasyon / otomatik item etiket ayarı</td><td class="st"><span class="status s-partial">KISMİ</span></td><td class="nt">Bu konfigürasyon anahtarları yok</td></tr>
+
+    <tr class="grp"><td colspan="3">Montaj (Assembly)</td></tr>
+    <tr><td class="feat">Assemble-to-stock/order + bileşen sarfı + output + Post</td><td class="st"><span class="status s-var">VAR</span></td><td class="nt">AssemblyApi / AssemblyMgmt</td></tr>
+
+    <tr class="grp"><td colspan="3">License Plate (Bağımsız Yönetim)</td></tr>
+    <tr><td class="feat">Build / Stop / Transfer / Unbuild / Partial-use (4 mod) / Assign / Print / Properties</td><td class="st"><span class="status s-var">VAR</span></td><td class="nt">LPApi + LPManagement (özellik/ağırlık/ölçü düzenleme dahil)</td></tr>
+    <tr><td class="feat">Nesting (parent/child) + SSCC-18 üretimi</td><td class="st"><span class="status s-var">VAR+</span></td><td class="nt">Bizde <b>fazlası</b>: LPNestManager + SSCCGenerator (GS1 check digit)</td></tr>
+
+    <tr class="grp"><td colspan="3">Scratchpad (Offline Veri Toplama)</td></tr>
+    <tr><td class="feat">Çevrimdışı kayıt toplama + BC'ye gönder + Process / Decode Items</td><td class="st"><span class="status s-none">YOK</span></td><td class="nt">Offline yakalama ekranı yok (bağlantı kopunca yalnızca "post edilemez" uyarısı)</td></tr>
+
+  </tbody>
+</table>
+
+<!-- ============ FRAMEWORK TABLOSU ============ -->
+<h2>2. Çapraz / Altyapı (Framework) Özellikleri</h2>
+<table class="cmp">
+  <thead>
+    <tr><th class="feat">Warehouse Insight Özelliği</th><th class="st">Bizde</th><th class="nt">Not / Kanıt</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="feat">Barkod kuralları — regex item parse ($1..$n grupları), GS1-128 AI</td><td class="st"><span class="status s-var">VAR</span></td><td class="nt">BarcodeParser (GS1 AI ayrıştırma) + BarcodeRule tablosu</td></tr>
+    <tr><td class="feat">Belge barkodu ile aç (%PO% / %S% / %R% / %WS% / %A% …)</td><td class="st"><span class="status s-none">YOK</span></td><td class="nt">Barkod çözücü Item/Bin/LP/Lot/Serial/Template sınıflar; belge barkodu tarayıp doküman açma yok (numarayla arama var)</td></tr>
+    <tr><td class="feat">Login yöntemleri (None / Custom / Windows Auth)</td><td class="st"><span class="status s-var">VAR*</span></td><td class="nt">*Farklı/daha modern model: Azure AD OAuth (device-code/token) + yerel kullanıcı (SHA-256) + cihaz kaydı + rol filtresi</td></tr>
+    <tr><td class="feat">Scan Behaviors (varsayılan qty/UoM, diyalog gizle, +1) + Find Line Templates</td><td class="st"><span class="status s-partial">KISMİ</span></td><td class="nt">+1 stepper var; diyalog-gizle / varsayılan-qty / Find Line Templates yok</td></tr>
+    <tr><td class="feat">Card View ↔ Grid View geçişi</td><td class="st"><span class="status s-none">YOK</span></td><td class="nt">Yalnızca kart görünümü</td></tr>
+    <tr><td class="feat">Hide/Show Completed (tamamlanan satırları gizle/göster)</td><td class="st"><span class="status s-none">YOK</span></td><td class="nt">—</td></tr>
+    <tr><td class="feat">Miktar diyaloğu — hesap makinesi + UoM seçici</td><td class="st"><span class="status s-partial">KISMİ</span></td><td class="nt">−/+1 stepper var; tam hesap makinesi ve UoM dropdown yok (UoM serbest metin)</td></tr>
+    <tr><td class="feat">Lot/Serial Info Card (düzenlenebilir ek alanlar + Blocked)</td><td class="st"><span class="status s-partial">KISMİ</span></td><td class="nt">Lot/seri yakalanır; ek-alanlı bilgi kartı yok (Blocked → Kalite modülünde)</td></tr>
+    <tr><td class="feat">Otomatik Lot/Seri numarası üretimi</td><td class="st"><span class="status s-none">YOK</span></td><td class="nt">Elle giriş</td></tr>
+    <tr><td class="feat">Quantity Extensions (tarama anında serbest ek alan yakalama)</td><td class="st"><span class="status s-none">YOK</span></td><td class="nt">Çerçeve yok</td></tr>
+    <tr><td class="feat">Yazdırma — item / bin / LP etiketleri</td><td class="st"><span class="status s-partial">KISMİ</span></td><td class="nt">LP etiketi güçlü (PrintNode / self-hosted / ZPL); item ve bin etiketi yok</td></tr>
+    <tr><td class="feat">Konfigüre edilebilir cihaz menüleri (ekle / gizle / sırala)</td><td class="st"><span class="status s-partial">KISMİ</span></td><td class="nt">Rol bazlı filtre + test/admin araçlarını gizleme var; menü öğesi editörü yok (sabit tile düzeni)</td></tr>
+    <tr><td class="feat">Çok dil (Regionalization)</td><td class="st"><span class="status s-var">VAR</span></td><td class="nt">tr / de / en (WHI: en-CA/US, es-MX, fr-CA)</td></tr>
+    <tr><td class="feat">Totes (özel LP tipi)</td><td class="st"><span class="status s-none">YOK</span></td><td class="nt">—</td></tr>
+  </tbody>
+</table>
+
+<!-- ============ BİZİM ARTILARIMIZ ============ -->
+<div class="section">
+<h2>3. Ek — Bizim Artılarımız (Warehouse Insight'ta yok / zayıf)</h2>
+<p class="small muted">Karşılaştırmanın diğer yönü: BCWMSApp'te olup Warehouse Insight 2.0'da bulunmayan güçlü yetenekler.</p>
+<ul class="pros">
+  <li><b>Kalite Yönetimi</b> — Quality Order (pass / fail / karantina bin, ANSI'ye göre otomatik örnek boyutu) + Microsoft Quality Management entegrasyonu + <b>Toplama/Mal Kabul/Sevkiyat'ta QC-block guard</b> (bloklu lot/seri sevk/pick engellenir). Warehouse Insight'ta kalite modülü yoktur.</li>
+  <li><b>License Plate Nesting</b> (parent/child) + <b>SSCC-18 üretimi</b> (GS1 kontrol hanesiyle). Warehouse Insight LP'si düz yapıdadır.</li>
+  <li><b>Modern kimlik doğrulama</b> — Azure AD OAuth (device-code / token) + yerel kullanıcı (tuz+hash) + cihaz parmak izi/kaydı. (WHI: NAV web-service kimlik bilgileri.)</li>
+  <li><b>Bulut yazdırma</b> — PrintNode + self-hosted ZPL kanalı + yazıcı token yönetimi. (WHI: NAV service-tier yazıcısı.)</li>
+  <li><b>Rol tabanlı dinamik belge filtresi</b> — kullanıcı rollerine göre <code class="f">%USER%</code>/<code class="f">%LOC%</code>/<code class="f">%TODAY%</code> token'larıyla otomatik filtreleme.</li>
+  <li><b>Kamera (ML Kit) + GS1-128 AI</b> yerleşik tarama ve <b>Scan &amp; Verify</b> yanlış-toplama önleme.</li>
+  <li><b>Native Business Central SaaS</b> — bulut, OData v2 API sayfaları üzerinde çalışır (WHI'nin NAV/service-tier modeline karşı konumlanma avantajı).</li>
+  <li><b>Push bildirim relay</b> (Firebase) altyapısı.</li>
+</ul>
+</div>
+
+<div class="foot">
+  Hazırlık yöntemi: Warehouse Insight 2.0 User Guide'daki özellikler çıkarıldı; her biri BCWMSApp kaynak kodunda (AL <code class="f">al/src</code> API sayfaları + yönetim codeunit'leri, Android <code class="f">com.dynops.bcwms</code> feature modülleri) arandı ve Var/Kısmi/Yok olarak işaretlendi. Durumlar 1 Temmuz 2026 tarihli kaynak koda dayanır. "Var*" / "farklı model" işaretleri: yetenek bizde farklı (genelde daha modern) mimariyle mevcut demektir.
+</div>
+
+</body>
+</html>

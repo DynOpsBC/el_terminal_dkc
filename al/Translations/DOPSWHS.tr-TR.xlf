@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file datatype="xml" source-language="en-US" target-language="tr-TR" original="BCWMSApp">
+    <body>
+      <trans-unit id="CountSheet"><source>Count Sheet</source><target>Sayım Fişi</target></trans-unit>
+      <trans-unit id="CountSheets"><source>Count Sheets</source><target>Sayım Fişleri</target></trans-unit>
+      <trans-unit id="Blind"><source>Blind</source><target>Kör</target></trans-unit>
+      <trans-unit id="Visible"><source>Visible</source><target>Görünür</target></trans-unit>
+      <trans-unit id="Recount"><source>Recount</source><target>Yeniden Say</target></trans-unit>
+      <trans-unit id="Variance"><source>Variance</source><target>Fark</target></trans-unit>
+      <trans-unit id="Posted"><source>Posted</source><target>Deftere Nakledildi</target></trans-unit>
+      <trans-unit id="WarehouseManager"><source>Warehouse Manager</source><target>Ambar Yöneticisi</target></trans-unit>
+      <trans-unit id="CountMode"><source>Count Mode</source><target>Sayım Modu</target></trans-unit>
+      <trans-unit id="CountSheetLine"><source>Count Sheet Line</source><target>Sayım Fişi Satırı</target></trans-unit>
+      <trans-unit id="CountCounter"><source>Count Counter</source><target>Sayım Personeli</target></trans-unit>
+      <trans-unit id="RecountRequired"><source>Recount Required</source><target>Yeniden Sayım Gerekli</target></trans-unit>
+      <trans-unit id="CountVarianceReview"><source>Count Variance Review</source><target>Sayım Farkı İnceleme</target></trans-unit>
+      <trans-unit id="SourceCountSheet"><source>Source Count Sheet</source><target>Kaynak Sayım Fişi</target></trans-unit>
+      <trans-unit id="OpenReceipts"><source>Open Receipts</source><target>Açık Mal Kabulleri</target></trans-unit>
+      <trans-unit id="OpenPicks"><source>Open Picks</source><target>Açık Toplamalar</target></trans-unit>
+      <trans-unit id="OpenShipments"><source>Open Shipments</source><target>Açık Sevkiyatlar</target></trans-unit>
+      <trans-unit id="LatePicks"><source>Late Picks</source><target>Geciken Toplamalar</target></trans-unit>
+      <trans-unit id="UnbuiltLPs"><source>Unbuilt LPs</source><target>Oluşturulmamış Sevk Plakaları</target></trans-unit>
+      <trans-unit id="CountDiscrepancies"><source>Count Discrepancies</source><target>Sayım Uyuşmazlıkları</target></trans-unit>
+      <trans-unit id="DevicesOnline"><source>Devices Online</source><target>Çevrim İçi Cihazlar</target></trans-unit>
+      <trans-unit id="MigrateFromWI"><source>Migrate from WI</source><target>WI'dan Geçiş</target></trans-unit>
+      <trans-unit id="PreflightCheck"><source>Preflight Check</source><target>Ön Kontrol</target></trans-unit>
+      <trans-unit id="DryRun"><source>Dry Run</source><target>Deneme Çalıştırması</target></trans-unit>
+      <trans-unit id="Cutover"><source>Cutover</source><target>Geçişi Tamamla</target></trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BCWMS El Terminali Kullanıcı Kılavuzu</title>
+  <meta name="description" content="Bağlantıdan başlayarak BCWMS el terminalindeki tüm menü ve operasyon sayfalarını açıklayan ekran görüntülü kullanıcı kılavuzu.">
+  <style>
+    :root {
+      --paper:#f4f5f8; --surface:#fff; --ink:#171727; --ink2:#333449;
+      --muted:#707487; --line:#dfe1e8; --purple:#6857e8; --purple2:#4f3fc5;
+      --purple-soft:#eeeafd; --green:#168c72; --green-soft:#e4f5ef;
+      --orange:#e07a2d; --orange-soft:#fff0e4; --red:#bb3e3e; --red-soft:#fbeaea;
+      --rail:286px; --radius:14px; --shadow:0 12px 34px -24px rgba(31,26,70,.45);
+      --font:"Segoe UI",Inter,system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+      --display:"Bahnschrift","Avenir Next Condensed","Arial Narrow",var(--font);
+      --mono:"Cascadia Mono","SFMono-Regular",Consolas,monospace;
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:var(--paper);color:var(--ink);font:15.5px/1.55 var(--font)}
+    img{max-width:100%;display:block} a{color:inherit} button{font:inherit} h1,h2,h3,h4{font-family:var(--display);line-height:1.13;margin:0;color:var(--ink)}
+    h1{font-size:clamp(2.1rem,4vw,3.8rem)} h2{font-size:clamp(1.5rem,2.4vw,2.05rem)} h3{font-size:1.16rem} p{margin:.45rem 0 .85rem}
+    .shell{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);min-height:100vh}
+    .rail{position:sticky;top:0;height:100vh;overflow:auto;background:#171527;color:#e7e5f5;padding:18px 14px}
+    .brand{display:flex;gap:11px;align-items:center;padding:4px 6px 16px;border-bottom:1px solid rgba(255,255,255,.13)}
+    .mark{width:38px;height:38px;border-radius:10px;background:var(--purple);display:grid;place-items:center;font-weight:900;font-size:1.15rem}
+    .brand b{display:block;color:#fff;font-size:1.05rem}.brand small{color:#aaa5c4;font-size:.72rem}
+    .company{margin:14px 5px;padding:11px;border:1px solid rgba(129,112,255,.42);background:rgba(104,87,232,.14);border-radius:10px}
+    .company small{display:block;color:#bcb6ff;font:10px/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase}.company b{color:#fff}
+    .rail-title{margin:17px 8px 7px;color:#9993b4;font:10px/1.2 var(--mono);letter-spacing:.13em;text-transform:uppercase}
+    .rail nav{display:grid;gap:5px}.rail a{text-decoration:none;color:#dad7eb;padding:9px 10px;border-radius:8px;border:1px solid transparent;font-size:.88rem}
+    .rail a:hover,.rail a.active{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.1);color:#fff}.rail a.active{border-left:3px solid #a99dff}
+    .rail a span{display:inline-block;min-width:28px;color:#aaa3d5;font:11px var(--mono)}
+    .rail-foot{margin-top:22px;padding:13px 8px 0;border-top:1px solid rgba(255,255,255,.13);font-size:.72rem;color:#9f9ab4}
+    .main{min-width:0}.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:8px;min-height:57px;padding:9px 26px;background:rgba(244,245,248,.93);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+    .chip{display:inline-flex;align-items:center;gap:7px;padding:5px 10px;background:#fff;border:1px solid var(--line);border-radius:999px;font:11px var(--mono);white-space:nowrap}.dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+    .grow{flex:1}.print-btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 11px;cursor:pointer;color:var(--ink2)}
+    main{max-width:1280px;padding:30px 36px 80px}.section{scroll-margin-top:76px;padding:0 0 48px;margin-bottom:34px;border-bottom:1px solid var(--line)}
+    .cover{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:18px;background:#fff;padding:32px;box-shadow:var(--shadow)}
+    .cover:after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(104,87,232,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(104,87,232,.055) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
+    .cover-grid{position:relative;z-index:1;display:grid;grid-template-columns:minmax(280px,1fr) minmax(280px,.76fr);gap:30px;align-items:center}.eyebrow{font:11px var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--purple2);margin-bottom:9px}
+    .cover h1 span{color:var(--purple)}.lead{font-size:1.12rem;color:var(--ink2);max-width:66ch}.meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:18px}.meta{padding:11px 12px;background:#f9f9fc;border:1px solid var(--line);border-radius:10px}.meta small{display:block;color:var(--muted);font:10px var(--mono);text-transform:uppercase}.meta b{font-size:.88rem}
+    .phone-cover{max-width:255px;margin:auto;border:6px solid #1d1b2a;border-radius:28px;overflow:hidden;background:#111;box-shadow:0 26px 55px -32px #171527}.phone-cover img{width:100%}
+    .section-head{display:flex;justify-content:space-between;gap:18px;align-items:end;margin-bottom:17px}.section-head p{max-width:72ch;color:var(--muted);margin:.5rem 0 0}.tag{display:inline-flex;padding:4px 9px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--muted);font:11px var(--mono);white-space:nowrap}
+    .quick-grid,.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}.card h3,.card h4{margin-bottom:6px}.card p{color:var(--ink2);margin:0}.card small{color:var(--muted)}
+    .page-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.page-card{display:grid;grid-template-columns:minmax(0,1fr) minmax(170px,.45fr);gap:14px;align-items:start;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}.page-card h3{margin-bottom:7px}.page-card ol,.page-card ul{margin:8px 0 0;padding-left:1.15rem}.page-card li{margin:.3rem 0}.page-card .shot-frame{max-width:210px}.scope{display:inline-flex;margin-bottom:8px;padding:3px 8px;border-radius:999px;background:var(--purple-soft);color:var(--purple2);font:10px var(--mono)}
+    .company-card{border-left:5px solid var(--purple)}.company-card.bade{border-left-color:var(--green)}
+    .ribbon{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:16px 0}.rib{position:relative;padding:12px 10px 12px 13px;border:1px solid var(--line);border-radius:10px;background:#fff;min-height:92px}.rib:not(:last-child):after{content:"→";position:absolute;right:-9px;top:37%;z-index:2;color:#9a95b0}.rib b{display:block;font-size:.9rem}.rib small{display:block;color:var(--muted);font-size:.74rem;line-height:1.3;margin-top:5px}.rib.p{border-top:4px solid var(--purple)}.rib.g{border-top:4px solid var(--green)}.rib.o{border-top:4px solid var(--orange)}
+    .flow{display:grid;gap:15px}.step{display:grid;grid-template-columns:minmax(280px,1fr) minmax(270px,.66fr);gap:20px;align-items:start;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:17px;box-shadow:var(--shadow)}
+    .step-no{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:9px;background:#1c1a2b;color:#fff;font:12px var(--mono);margin-right:8px}.step h3{display:inline;vertical-align:middle}.step ul{margin:12px 0 0;padding-left:1.15rem}.step li{margin:.35rem 0}.control{margin-top:12px;padding:10px 12px;border-radius:9px;background:var(--purple-soft);border:1px solid #d8d1fa;color:#3f337e;font-size:.88rem}.control.warn{background:var(--orange-soft);border-color:#f2c9aa;color:#7d431a}.control.ok{background:var(--green-soft);border-color:#b9e1d3;color:#145f4f}
+    figure{margin:0}.shot{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in}.shot-frame{display:block;max-width:300px;margin:auto;border:5px solid #292637;border-radius:24px;overflow:hidden;background:#292637;box-shadow:0 20px 45px -30px #171527}.shot img{width:100%;height:auto}.shot:hover .shot-frame{border-color:var(--purple)}figcaption{text-align:center;color:var(--muted);font:11px var(--mono);margin-top:7px}
+    .modes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}.mode{padding:15px;border-radius:12px;border:1px solid var(--line);background:#fff}.mode b{display:block;font-size:1rem}.mode span{font-size:.82rem;color:var(--muted)}.mode.multi{border-top:4px solid var(--purple)}.mode.mono{border-top:4px solid var(--green)}.mode.sku{border-top:4px solid var(--orange)}
+    .callout{padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:#fff;margin:14px 0}.callout b{display:block;margin-bottom:3px}.callout.warn{background:var(--orange-soft);border-color:#efc6a7}.callout.danger{background:var(--red-soft);border-color:#e5b6b6}.callout.ok{background:var(--green-soft);border-color:#b8dfd2}
+    .faq{display:grid;gap:10px}.faq details{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}.faq summary{display:flex;align-items:center;gap:10px;cursor:pointer;padding:15px 17px;font-weight:700;list-style:none}.faq summary::-webkit-details-marker{display:none}.faq summary:before{content:"?";display:grid;place-items:center;flex:0 0 27px;height:27px;border-radius:8px;background:var(--purple-soft);color:var(--purple2);font:700 12px var(--mono)}.faq summary:after{content:"+";margin-left:auto;color:var(--purple);font-size:1.25rem}.faq details[open] summary{border-bottom:1px solid var(--line);background:#faf9ff}.faq details[open] summary:after{content:"−"}.faq-answer{padding:14px 18px 16px;color:var(--ink2)}.faq-answer p:first-child{margin-top:0}.faq-answer p:last-child{margin-bottom:0}.faq-answer ul,.faq-answer ol{margin:.55rem 0 0;padding-left:1.2rem}.example-table td:nth-child(2){font-weight:700;color:var(--purple2)}
+    table{border-collapse:collapse;width:100%;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}th,td{padding:10px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}th{background:#f2f1f8;color:var(--muted);font:10px var(--mono);letter-spacing:.08em;text-transform:uppercase}tr:last-child td{border-bottom:0}td:first-child{font-weight:650}
+    .checklist{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;list-style:none;padding:0}.checklist li{background:#fff;border:1px solid var(--line);border-radius:10px;padding:11px 12px}.checklist li:before{content:"□";color:var(--purple);font-weight:900;margin-right:9px}
+    .lightbox{position:fixed;inset:0;z-index:100;display:none;place-items:center;background:rgba(12,11,20,.88);padding:24px}.lightbox.open{display:grid}.lightbox img{max-height:88vh;max-width:min(92vw,640px);border-radius:20px;border:5px solid #fff}.lightbox button{position:absolute;right:22px;top:18px;width:44px;height:44px;border:1px solid rgba(255,255,255,.35);border-radius:50%;background:rgba(255,255,255,.12);color:#fff;font-size:25px;cursor:pointer}
+    .footer{color:var(--muted);font-size:.82rem;padding:12px 0}.mobile-nav{display:none}
+    @media(max-width:1000px){.ribbon{grid-template-columns:repeat(3,1fr)}.quick-grid,.cards,.page-grid{grid-template-columns:1fr 1fr}.page-card{grid-template-columns:1fr}.cover-grid{grid-template-columns:1fr}.phone-cover{max-width:230px}.step{grid-template-columns:1fr}.shot-frame{max-width:350px}}
+    @media(max-width:760px){.shell{display:block}.rail{position:relative;height:auto}.rail nav{grid-template-columns:1fr 1fr}.rail-title,.company,.rail-foot{display:none}.main{width:100%}.topbar{padding:8px 12px}.topbar .chip:nth-of-type(2){display:none}main{padding:18px 14px 55px}.cover{padding:22px}.meta-grid,.quick-grid,.cards,.page-grid,.modes,.checklist{grid-template-columns:1fr}.ribbon{grid-template-columns:1fr 1fr}.section-head{display:block}.section-head .tag{margin-top:8px}.step{padding:13px}}
+    @media print{@page{size:A4 landscape;margin:9mm}.rail,.topbar,.lightbox{display:none!important}.shell{display:block}body{background:#fff;font-size:10.5px;line-height:1.32}main{max-width:none;padding:0}.section{break-before:page;border:0;padding:0;margin:0}.section:first-child{break-before:auto}.section-head{margin-bottom:9px}.section-head h2{font-size:21px}.cover{padding:18px}.cover-grid{grid-template-columns:1.5fr .45fr;gap:15px}.cover h1{font-size:35px}.lead{font-size:12px}.meta-grid{margin-top:10px}.quick-grid,.cards{gap:7px}.card{padding:10px}.flow{gap:7px}.step{grid-template-columns:minmax(0,1.55fr) minmax(120px,.42fr);gap:9px;padding:9px;box-shadow:none;break-inside:avoid-page}.step h3{font-size:14px}.step ul,.step ol{margin-top:6px}.step li{margin:.18rem 0}.control,.callout{margin-top:6px;padding:7px 9px}.shot-frame{max-width:135px;border-width:3px;border-radius:15px;box-shadow:none}figcaption{font-size:8px}.modes,.ribbon{gap:5px;margin:7px 0}.mode{padding:8px}.rib{min-height:58px;padding:7px}.page-grid{grid-template-columns:1fr 1fr;gap:7px}.page-card{grid-template-columns:minmax(0,1.5fr) minmax(105px,.38fr);gap:7px;padding:8px;box-shadow:none;break-inside:avoid-page}.page-card .shot-frame{max-width:105px}.page-card ol,.page-card ul{margin-top:4px}.page-card li{margin:.14rem 0}.faq{gap:5px}.faq details{box-shadow:none;break-inside:avoid-page}.faq summary{padding:8px 10px}.faq-answer{padding:7px 10px 9px}table{font-size:9px}th,td{padding:6px 7px}.checklist{gap:5px}.checklist li{padding:7px 8px}.footer{padding:7px 0}.step,.card,.cover,.page-card,.mode,.rib{box-shadow:none}}
+    @media print{.checklist{gap:3px}.checklist li{padding:5px 6px}.footer{padding:4px 0}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <aside class="rail">
+    <div class="brand"><div class="mark">W</div><div><b>BCWMS</b><small>El Terminali Kılavuzu</small></div></div>
+    <div class="company"><small>Kapsam</small><b>BS Üretim + BADE</b></div>
+    <div class="rail-title">Başlangıç</div>
+    <nav>
+      <a href="#kapak"><span>00</span> Genel Bakış</a>
+      <a href="#baglanti"><span>01</span> Bağlantı ve Giriş</a>
+      <a href="#ana-menu"><span>02</span> Ana Menü</a>
+      <a href="#hazirlik"><span>03</span> İşleme Hazırlık</a>
+    </nav>
+    <div class="rail-title">Ana Operasyonlar</div>
+    <nav>
+      <a href="#mal-kabul"><span>04</span> BS Üretim · Mal Kabul</a>
+      <a href="#toplama"><span>05</span> BADE · Toplama</a>
+      <a href="#paketleme"><span>06</span> BADE · Paketleme</a>
+    </nav>
+    <div class="rail-title">Diğer Sayfalar</div>
+    <nav>
+      <a href="#diger-lojistik"><span>07</span> Gelen + Giden</a>
+      <a href="#ic-operasyon"><span>08</span> İç Operasyon</a>
+      <a href="#uretim"><span>09</span> Üretim + Montaj</a>
+      <a href="#kalite"><span>10</span> Kalite</a>
+      <a href="#sorgu"><span>11</span> Sorgu</a>
+      <a href="#sistem"><span>12</span> Sistem</a>
+    </nav>
+    <div class="rail-title">Kontrol</div>
+    <nav>
+      <a href="#sss"><span>13</span> Sorabilecekleriniz</a>
+      <a href="#hatalar"><span>14</span> Uyarılar ve Çözümler</a>
+      <a href="#kontrol-listesi"><span>15</span> Kullanıcı Kontrol Listesi</a>
+    </nav>
+    <div class="rail-foot">BCWMS Android <b>1.14.5-bade</b><br>AL paketi: <b>1.14.0.20</b><br>Güncelleme: 18.08.2026</div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <span class="chip"><span class="dot"></span> Ekran görüntülü</span>
+      <span class="chip">BS Üretim · Mal Kabul</span>
+      <span class="chip">BADE · Toplama + Paketleme</span>
+      <span class="grow"></span>
+      <button class="print-btn" type="button" onclick="window.print()">Yazdır / PDF</button>
+    </div>
+
+    <main>
+      <section class="section" id="kapak">
+        <div class="cover">
+          <div class="cover-grid">
+            <div>
+              <div class="eyebrow">DynamicsOps · Operatör Kılavuzu</div>
+              <h1>BCWMS <span>El Terminali</span></h1>
+              <p class="lead">BS Üretim şirketinde mal kabul; BADE şirketinde V2 toplama ve paketleme işlemlerinin sahada uygulanma sırası.</p>
+              <div class="meta-grid">
+                <div class="meta"><small>Sürüm</small><b>1.14.5-bade</b></div>
+                <div class="meta"><small>Ortam</small><b>sand1506</b></div>
+                <div class="meta"><small>Kullanım</small><b>El terminali</b></div>
+              </div>
+              <div class="callout warn"><b>Temel kural</b>İşleme başlamadan önce üst bölümdeki şirket adını mutlaka kontrol edin. Yanlış şirketteki belge, doğru numara yazılsa bile bulunmaz.</div>
+            </div>
+            <figure><button class="shot" data-full="assets/bade-home.png"><span class="shot-frame"><img src="assets/bade-home.png" alt="BCWMS BADE ana menü ekranı"></span></button><figcaption>BADE şirketi seçilmiş ana menü</figcaption></figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="baglanti">
+        <div class="section-head"><div><div class="eyebrow">01 · Bağlantı ve giriş</div><h2>Terminali Business Central'a bağlayın</h2><p>İlk kurulumda ortam ve şirket seçilir. Sonraki kullanımlarda operatör kendi WMS hesabını seçerek giriş yapar.</p></div><span class="tag">İLK EKRAN</span></div>
+        <div class="ribbon"><div class="rib p"><b>Bağlantı'yı aç</b><small>Bağlı rozetine dokun</small></div><div class="rib p"><b>Operatörü seç</b><small>WMS hesabı</small></div><div class="rib p"><b>Şifreyi gir</b><small>Yönetici hariç</small></div><div class="rib p"><b>Ortamı doğrula</b><small>sand1506</small></div><div class="rib p"><b>Şirketi seç</b><small>BS Üretim / BADE</small></div><div class="rib p"><b>Bağlı'yı kontrol et</b><small>Yeşil rozet</small></div></div>
+        <div class="flow">
+          <article class="step"><div><span class="step-no">01</span><h3>Bağlantı Ayarları ekranını açın</h3><ul><li>Ana menüde veya herhangi bir sayfada sağ üstteki <b>Bağlı / Bağlı değil</b> rozetine dokunun.</li><li>Listeden kendi operatör hesabınızı seçin. Örneğin toplama için <b>Picker Operator</b>, mal kabul için <b>Receiving Operator</b>.</li><li>Operatör hesabı listede yoksa <b>Listede yokum — elle yazayım</b> yolunu yalnız yönetici yönlendirmesiyle kullanın.</li><li><b>Yönetici</b> seçeneği demo/yönetim içindir; günlük depo işlemi doğru operatör hesabıyla yapılmalıdır.</li></ul><div class="control">Atama ve işlem geçmişi giriş yapılan WMS kullanıcısına yazılır. Ortak kullanıcı kullanmayın.</div></div><figure><button class="shot" data-full="assets/00-baglanti-giris.png"><span class="shot-frame"><img src="assets/00-baglanti-giris.png" alt="BCWMS WMS hesabı ile giriş ve operatör seçimi"></span></button><figcaption>Bağlantı Ayarları · Operatör seçimi</figcaption></figure></article>
+
+          <article class="step"><div><span class="step-no">02</span><h3>Ortam ve şirketi seçin</h3><ul><li>Ortam değişecekse alttaki <b>Ortam / sandbox değiştir</b> bağlantısını açın.</li><li>Ortam alanına örneğin <b>sand1506</b> yazıp <b>Bul</b> deyin.</li><li>Mal kabul için <b>BS GROUP ÜRETİM VE KİMYA…</b>; toplama ve paketleme için <b>BADE NATURAL DOĞAL YAŞAM…</b> şirketini seçin.</li><li>Şirkete dokunmak aktif şirketi değiştirir; sonraki bütün belge ve stok sorguları bu şirketten gelir.</li></ul><div class="control warn">Şirket değişikliği yalnız görünümü değil API hedefini de değiştirir. Belge numarası doğru olsa bile yanlış şirkette belge bulunmaz.</div></div><figure><button class="shot" data-full="assets/01-baglanti-ortam-sirket.png"><span class="shot-frame"><img src="assets/01-baglanti-ortam-sirket.png" alt="BCWMS ortam ve şirket seçimi"></span></button><figcaption>Ortam · Şirket seçimi</figcaption></figure></article>
+
+          <article class="step"><div><span class="step-no">03</span><h3>Bağlantının hazır olduğunu doğrulayın</h3><ul><li>Sağ üstte yeşil nokta ile <b>Bağlı</b> yazmalıdır.</li><li>Ana menü başlığında ortam ve aktif şirket adı doğru görünmelidir.</li><li>Şirketi tekrar değiştirmek için <b>Şirket Değiştir</b> düğmesini kullanın; yeniden parola girmeniz gerekmez.</li><li>Bağlı değilse işlem sayfasına geçmeden önce <b>Sistem Sağlığı</b> veya bağlantı ekranından kontrol yapın.</li></ul><div class="control ok">Hazır durum: doğru operatör + doğru ortam + doğru şirket + yeşil Bağlı rozeti.</div></div><figure><button class="shot" data-full="assets/02-ana-menu-ust.png"><span class="shot-frame"><img src="assets/02-ana-menu-ust.png" alt="BCWMS bağlı ana menü ve şirket değiştir düğmesi"></span></button><figcaption>Ana Menü · Bağlı ve aktif şirket</figcaption></figure></article>
+        </div>
+      </section>
+
+      <section class="section" id="ana-menu">
+        <div class="section-head"><div><div class="eyebrow">02 · Ana menü</div><h2>Tüm sayfalar ve kullanım amaçları</h2><p>Menü aşağı doğru kaydırılır. Her kutu ayrı bir iş sayfasıdır; sağ üstteki V2 ve Bağlı rozetleri bütün sayfalarda görünür.</p></div><span class="tag">TÜM MODÜLLER</span></div>
+        <div class="quick-grid">
+          <div class="card"><h3>Gelen</h3><p><b>Mal Kabul</b> ve <b>Yerleştirme</b>: gelen ürünü kabul eder, sonra hedef bin'e taşır.</p></div>
+          <div class="card"><h3>Giden</h3><p><b>Toplama</b>, <b>Paketleme</b> ve <b>Sevkiyat</b>: siparişi raftan koliye ve sevke taşır.</p></div>
+          <div class="card"><h3>İç Operasyon</h3><p><b>LP</b>, serbest/yönlendirilmiş hareket ve <b>Sayım</b>: depo içindeki stok ve taşıma kabı işlemleri.</p></div>
+          <div class="card"><h3>Üretim</h3><p><b>Üretim</b> ve <b>Montaj</b>: sarfiyat, çıktı ve montaj emri işlemleri.</p></div>
+          <div class="card"><h3>Kalite + Sorgu</h3><p>Kalite emirleri; ürün, bin ve ambar hareketi sorguları.</p></div>
+          <div class="card"><h3>Sistem</h3><p>Görünen alanlar, sistem sağlığı, yazıcı, test ve bağlantı yönetimi.</p></div>
+        </div>
+        <div class="cards" style="margin-top:14px">
+          <figure class="card"><button class="shot" data-full="assets/02-ana-menu-ust.png"><span class="shot-frame"><img src="assets/02-ana-menu-ust.png" alt="Ana menü üst bölüm"></span></button><figcaption>Gelen · Giden · İç Operasyon başlangıcı</figcaption></figure>
+          <figure class="card"><button class="shot" data-full="assets/03-ana-menu-orta.png"><span class="shot-frame"><img src="assets/03-ana-menu-orta.png" alt="Ana menü orta bölüm"></span></button><figcaption>İç Operasyon · Üretim · Kalite</figcaption></figure>
+          <figure class="card"><button class="shot" data-full="assets/03-ana-menu-alt.png"><span class="shot-frame"><img src="assets/03-ana-menu-alt.png" alt="Ana menü alt bölüm"></span></button><figcaption>Sorgu · Sistem</figcaption></figure>
+        </div>
+        <div class="callout warn"><b>V2 düğmesi</b>Toplama ve paketlemede yeni Multi / Mono / Tek SKU akışını açar. Bu kılavuzdaki BADE toplama ve paketleme adımlarında V2 açık olmalıdır.</div>
+      </section>
+
+      <section class="section" id="hazirlik">
+        <div class="section-head"><div><div class="eyebrow">03 · İşleme hazırlık</div><h2>Üç kontrol, sonra işlem</h2><p>Her vardiya başlangıcında bağlantı, şirket ve kullanıcı/lokasyon kontrol edilir.</p></div><span class="tag">POST ÖNCESİ ZORUNLU</span></div>
+        <div class="quick-grid">
+          <div class="card"><h3>1. Bağlantı</h3><p>Sağ üstte <b>Bağlı</b> ve yeşil nokta görülmelidir. Bağlantı yoksa okutmaya başlamayın.</p></div>
+          <div class="card"><h3>2. Şirket</h3><p>Mal kabulde <b>BS GROUP ÜRETİM…</b>; toplama ve paketlemede <b>BADE NATURAL DOĞAL YAŞAM…</b> seçilmelidir.</p></div>
+          <div class="card"><h3>3. Kullanıcı</h3><p>Toplama/ambar belgesi kullanıcıya atanmalıdır. Kullanıcının BC’de ilgili lokasyon için <b>Ambar Çalışanı</b> kaydı bulunmalıdır.</p></div>
+        </div>
+        <div class="cards" style="margin-top:12px">
+          <div class="card company-card"><h4>BS Üretim</h4><p>BS GROUP ÜRETİM VE KİMYA SAN. TİC. A.Ş.</p><small>Bu kılavuzda: Mal Kabul</small></div>
+          <div class="card company-card bade"><h4>BADE</h4><p>BADE NATURAL DOĞAL YAŞAM ÜRÜNLERİ SAN. TİC. A.Ş.</p><small>Bu kılavuzda: Toplama + Paketleme</small></div>
+          <div class="card"><h4>Şirket değiştirme</h4><p>Ana menüde şirket adının altındaki <b>Şirket Değiştir</b> düğmesine basın ve listeden şirketi seçin.</p></div>
+        </div>
+      </section>
+
+      <section class="section" id="mal-kabul">
+        <div class="section-head"><div><div class="eyebrow">04 · BS Üretim</div><h2>Mal Kabul</h2><p>Belgeyi açın, gerekiyorsa LP başlatın, ürün/lot bilgilerini girin; satırları hazırladıktan sonra tek seferde post edin.</p></div><span class="tag">ŞİRKET: BS ÜRETİM</span></div>
+        <div class="ribbon">
+          <div class="rib p"><b>Şirketi doğrula</b><small>BS Üretim</small></div><div class="rib p"><b>Belgeyi aç</b><small>Mal Kabul</small></div><div class="rib p"><b>LP başlat</b><small>Palet/kasa</small></div><div class="rib p"><b>Ürünü okut</b><small>Miktar + lotlar</small></div><div class="rib p"><b>LP kapat</b><small>Etiketi yazdır</small></div><div class="rib p"><b>Kaydet (post)</b><small>Belgeyi tamamla</small></div>
+        </div>
+        <div class="flow">
+          <article class="step"><div><span class="step-no">01</span><h3>BS Üretim şirketini ve Mal Kabul menüsünü açın</h3><ul><li>Ana menüde şirket satırı <b>BS GROUP ÜRETİM VE KİMYA SAN. TİC. A.Ş.</b> olmalıdır.</li><li><b>Mal Kabul</b> kutusuna dokunun.</li><li><b>Ambar Mal Kabul</b> sekmesinde çalışın. Doğrudan PO kabulü gerekiyorsa yalnız yetkili yönlendirmesiyle <b>Satın Alma Siparişi</b> sekmesini kullanın.</li></ul><div class="control">Şirket yanlışsa önce <b>Şirket Değiştir</b> ile düzeltin.</div></div><figure><button class="shot" data-full="assets/bs-home.png"><span class="shot-frame"><img src="assets/bs-home.png" alt="BS Üretim şirketinde BCWMS ana menüsü"></span></button><figcaption>BS Üretim · Ana menü</figcaption></figure></article>
+
+          <article class="step"><div><span class="step-no">02</span><h3>Mal kabul belgesini bulun</h3><ul><li>Varsayılan görünüm <b>Bana atanan</b> belgeleri gösterir.</li><li>Belge görünmüyorsa <b>Tümü</b> seçeneğini işaretleyin.</li><li>Mal kabul numarasıyla arayabilir veya barkodu okutabilirsiniz.</li><li>Doğru lokasyon ve kaynak numarasını kontrol edip belge kartına dokunun.</li></ul></div><figure><button class="shot" data-full="assets/bs-receipt-list.png"><span class="shot-frame"><img src="assets/bs-receipt-list.png" alt="BS Üretim mal kabul belge listesi"></span></button><figcaption>Ambar Mal Kabul · Belge listesi</figcaption></figure></article>
+
+          <article class="step"><div><span class="step-no">03</span><h3>Belgeyi hazırlayın ve LP’yi başlatın</h3><ul><li>Başlıktaki belge no, lokasyon, kaynak ve ilerleme bilgisini doğrulayın.</li><li>Belge size atanmadıysa <b>Bana Ata</b> düğmesini kullanın.</li><li>Palet/kasa bazlı takip yapılacaksa ürün girişinden önce <b>LP Başlat</b> deyin.</li><li>Aktif LP açıldıktan sonra girilen satırlar bu LP ile ilişkilendirilir.</li></ul><div class="control warn"><b>LP nedir?</b> Palet, kasa veya toplama kabının sistemdeki tekil kimliğidir. Aynı fiziksel taşıma birimi için işlem boyunca aynı LP kullanılmalıdır.</div></div><figure><button class="shot" data-full="assets/bs-receipt-document.png"><span class="shot-frame"><img src="assets/bs-receipt-document.png" alt="Mal kabul belgesi detay ekranı ve LP Başlat düğmesi"></span></button><figcaption>Belge detayı · Satırlar + LP Başlat</figcaption></figure></article>
+
+          <article class="step"><div><span class="step-no">04</span><h3>Ürünü okutun ve miktarı girin</h3><ul><li><b>Tara</b> düğmesini kullanın veya satıra dokunun.</li><li><b>Miktar</b> alanına fiilen gelen miktarı yazın.</li><li>UOM alanının ürünün kabul birimiyle aynı olduğunu kontrol edin.</li><li><b>Lot No</b> iç lot numarasıdır. Numara serisi kurgusu varsa otomatik dolabilir; boşsa okutun veya girin.</li><li><b>Tedarikçi Lotu</b> tedarikçinin ambalaj/sertifika üzerindeki lotudur; zorunlu satırda boş bırakılamaz.</li><li><b>Onayla</b> satırı hazırlar; belgeyi henüz post etmez.</li></ul><div class="control ok">İç lot ile tedarikçi lotu aynı bilgi değildir. İkisini de ekrandaki karşılıklarına doğru girin.</div></div><figure><button class="shot" data-full="assets/bs-receipt-quantity-lot.png"><span class="shot-frame"><img src="assets/bs-receipt-quantity-lot.png" alt="Mal kabul miktar, iç lot ve tedarikçi lotu giriş ekranı"></span></button><figcaption>Miktar · İç lot · Tedarikçi lotu</figcaption></figure></article>
+
+          <article class="step"><div><span class="step-no">05</span><h3>Tedarikçi Lotu Lookup kullanın</h3><ul><li>Daha önce tanımlanmış lotu bulmak için <b>Tedarikçi Lotu Lookup</b> düğmesine basın.</li><li>Tedarikçi lotu veya iç lot numarasıyla arayın.</li><li>Sonuç kartına dokunduğunuzda iç lot ve tedarikçi lotu birlikte doldurulur.</li><li>Yeni tedarikçi lotu listede yoksa alana doğrudan yazabilir veya barkodu kamerayla okutabilirsiniz.</li></ul><div class="control">Lookup sonucu Business Central’daki Lot No Bilgi kaydından gelir. Seçim sonrası iki alanı da tekrar kontrol edin.</div></div><figure><button class="shot" data-full="assets/bs-supplier-lot-lookup.png"><span class="shot-frame"><img src="assets/bs-supplier-lot-lookup.png" alt="Tedarikçi lotu lookup sonuç ekranı"></span></button><figcaption>Tedarikçi Lotu Lookup</figcaption></figure></article>
+
+          <article class="step"><div><span class="step-no">06</span><h3>LP’yi kapatın ve belgeyi post edin</h3><ul><li>Aynı paletteki tüm ürünleri girdikten sonra <b>LP Kapat</b> deyin. LP etiketi varsayılan etiket yazıcısına gönderilir.</li><li>Başka palet varsa yeni LP başlatıp aynı adımları tekrarlayın.</li><li>İsteniyorsa <b>Mal kabul belgesi yazdır</b> kutusunu işaretleyin.</li><li><b>Kaydet (post)</b> düğmesine basın; onay penceresindeki satır ve toplam miktarı kontrol edin.</li><li>Son onaydan sonra BC ambar mal kabul kaydı oluşur.</li></ul><div class="control warn"><b>Post geri alınabilir bir satır kaydı değildir.</b> Lot, tedarikçi lotu, miktar ve LP kontrolü bitmeden son onayı vermeyin.</div></div><figure><button class="shot" data-full="assets/bs-receipt-document.png"><span class="shot-frame"><img src="assets/bs-receipt-document.png" alt="Mal kabul post öncesi belge detay ekranı"></span></button><figcaption>Alt işlem alanları · LP + Kaydet</figcaption></figure></article>
+        </div>
+      </section>
+
+      <section class="section" id="toplama">
+        <div class="section-head"><div><div class="eyebrow">05 · BADE</div><h2>V2 Toplama</h2><p>Doğru toplama grubunu seçin; önce kullanıcı atamasını, sonra ana sepet LP’sini, rafı ve ürünü doğrulayın.</p></div><span class="tag">ŞİRKET: BADE</span></div>
+        <div class="modes"><div class="mode multi"><b>▦ Multi</b><span>Çok sipariş · çok ürün. Aynı ürün farklı siparişlerdeyse toplam miktar dağıtılır.</span></div><div class="mode mono"><b>1× Mono</b><span>Her siparişte farklı tek ürün. Ürün tek siparişe gider.</span></div><div class="mode sku"><b>≡ Tek SKU</b><span>Çok sipariş · aynı ürün. Ortak SKU miktarı siparişlere dağıtılır.</span></div></div>
+        <div class="ribbon"><div class="rib g"><b>Grubu seç</b><small>Multi / Mono / Tek SKU</small></div><div class="rib g"><b>Pick’i aç</b><small>Bana atanan</small></div><div class="rib g"><b>Sepet LP</b><small>Öneri veya okutma</small></div><div class="rib g"><b>Rafı okut</b><small>Konumu doğrula</small></div><div class="rib g"><b>Ürünü okut</b><small>Miktarı kontrol et</small></div><div class="rib g"><b>Pick’i post et</b><small>Paketlemeye bırak</small></div></div>
+        <div class="flow">
+          <article class="step"><div><span class="step-no">01</span><h3>BADE şirketine geçin ve Toplama’yı açın</h3><ul><li>Ana menüde şirketi <b>BADE NATURAL DOĞAL YAŞAM ÜRÜNLERİ SAN. TİC. A.Ş.</b> olarak seçin.</li><li><b>Toplama</b> menüsüne girin.</li><li>İş emrindeki akışa göre <b>Multi</b>, <b>Mono</b> veya <b>Tek SKU</b> sekmesini seçin.</li></ul></div><figure><button class="shot" data-full="assets/bade-picking-list.png"><span class="shot-frame"><img src="assets/bade-picking-list.png" alt="BADE V2 toplama grup ve pick listesi"></span></button><figcaption>V2 Toplama · Akış seçimi ve liste</figcaption></figure></article>
+
+          <article class="step"><div><span class="step-no">02</span><h3>Pick’i seçin ve sahipliğini kontrol edin</h3><ul><li><b>Bana atanan</b> görünümünden kendi işinizi açın.</li><li>Atanmamış belgeyi açtıysanız <b>Kendime Ata ve Toplamaya Başla</b> deyin.</li><li>Başkasına atanmış iş salt görüntülenir. Yetkili karar olmadan devralmayın.</li><li>Başlıktaki sipariş, ürün sayısı ve lokasyonu kontrol edin.</li></ul><div class="control warn">Aynı pick iki kullanıcı tarafından eş zamanlı toplanmamalıdır; miktarlar çakışabilir.</div></div><figure><button class="shot" data-full="assets/bade-picking-list.png"><span class="shot-frame"><img src="assets/bade-picking-list.png" alt="Bana atanan BADE pick listesi"></span></button><figcaption>Örnek: PI000015 · Size atanmış</figcaption></figure></article>
+
+          <article class="step"><div><span class="step-no">03</span><h3>Toplama sepetini (ana LP) belirleyin</h3><ul><li>Sistem <b>Yeni sepet oluşturulacak</b> önerisini gösterebilir. Fiziksel yeni sepet kullanıyorsanız <b>Önerilen sepeti kullan</b> deyin.</li><li>Elinizde etiketli sepet varsa <b>Farklı bir sepet okut / değiştir</b> ile LP barkodunu okutun.</li><li>Bu LP, topladığınız ürünlerin fiziksel kabını temsil eder ve paketlemede tekrar doğrulanır.</li></ul><div class="control ok">Pick boyunca ürünleri farklı sepete taşımayın. Sepet değişecekse ekrandaki değiştirme akışını kullanın.</div></div><figure><button class="shot" data-full="assets/bade-picking-lp.png"><span class="shot-frame"><img src="assets/bade-picking-lp.png" alt="BADE V2 toplama sepet LP seçimi"></span></button><figcaption>Toplama kabı · Sepet/LP seçimi</figcaption></figure></article>
+
+          <article class="step"><div><span class="step-no">04</span><h3>Rafı ve ürünü sırayla okutun</h3><ul><li>Ekrandaki <b>Sıradaki Raf</b> barkodunu okutun. Yanlış raf okutulursa devam edilmez.</li><li>Raf doğrulandıktan sonra yalnız <b>Ürün okut</b> alanını kullanın; satırı dokunarak tamamlamayın.</li><li>Tek satırlı üründe sepete konacak adet ve sipariş bilgisi onay kartında gösterilir.</li><li>Aynı ürün birden fazla siparişteyse toplam miktar girilir ve sistem alt siparişlere dağıtır.</li><li>Lotlu üründe ürün barkodunun lot bilgisini doğru taşıdığını kontrol edin.</li></ul></div><figure><button class="shot" data-full="assets/bade-picking-lp.png"><span class="shot-frame"><img src="assets/bade-picking-lp.png" alt="Toplama belgesi başlık ve sepet ekranı"></span></button><figcaption>Sepet onayından sonra raf → ürün akışı başlar</figcaption></figure></article>
+
+          <article class="step"><div><span class="step-no">05</span><h3>Tümünü toplayın ve Pick’i post edin</h3><ul><li>Her raftaki ürünler tamamlandıkça sistem sıradaki rafa geçer.</li><li>Tüm satırlar tamamlandığında <b>TÜM SİPARİŞLER TOPLANDI</b> mesajı görünür.</li><li>Satır ve miktarları son kez kontrol edin.</li><li><b>Pick’i Post Et</b> düğmesiyle işi paketleme kuyruğuna bırakın.</li></ul><div class="control warn">Pick post edilmeden paketleme kuyruğunda doğru ve güncel sepet görünmeyebilir.</div></div><figure><button class="shot" data-full="assets/bade-picking-list.png"><span class="shot-frame"><img src="assets/bade-picking-list.png" alt="Toplama listesi ve ilerleme yüzdesi"></span></button><figcaption>Pick listesi · İlerleme yüzdesi</figcaption></figure></article>
+        </div>
+      </section>
+
+      <section class="section" id="paketleme">
+        <div class="section-head"><div><div class="eyebrow">06 · BADE</div><h2>V2 Paketleme</h2><p>Paketleme her zaman toplama sepeti LP’sinin doğrulanmasıyla başlar; ürünler bitmeden koli adımı açılmaz.</p></div><span class="tag">LP → ÜRÜN → KOLİ</span></div>
+        <div class="ribbon"><div class="rib o"><b>Akışı seç</b><small>Multi / Mono / Tek SKU</small></div><div class="rib o"><b>LP’yi okut</b><small>Toplama sepeti</small></div><div class="rib o"><b>LP doğrulansın</b><small>Beklenen = okunan</small></div><div class="rib o"><b>Ürünleri okut</b><small>Sipariş sırası</small></div><div class="rib o"><b>Koliyi okut</b><small>Ürün bitince</small></div><div class="rib o"><b>Siparişi kapat</b><small>Sonraki sipariş</small></div></div>
+        <div class="flow">
+          <article class="step"><div><span class="step-no">01</span><h3>Paketleme kuyruğunu açın</h3><ul><li>BADE şirketinde <b>Paketleme</b> menüsüne girin.</li><li>Toplamada kullanılan aynı akış tipini seçin.</li><li>Kuyruk kartları pick veya sepet LP numarası, sipariş sayısı ve oturum durumunu gösterir.</li></ul></div><figure><button class="shot" data-full="assets/bade-packing-queue.png"><span class="shot-frame"><img src="assets/bade-packing-queue.png" alt="BADE V2 paketleme kuyruğu"></span></button><figcaption>V2 Paketleme · Sepet kuyruğu</figcaption></figure></article>
+
+          <article class="step"><div><span class="step-no">02</span><h3>Önce toplama sepeti LP’sini okutun</h3><ul><li>Kuyruktaki karta dokunmak yerine mümkünse üstteki <b>Önce toplama sepeti LP’sini okut</b> alanını kullanın.</li><li>Toplamada ürünlerin konduğu fiziksel sepetin LP etiketini okutun.</li><li>Sistem LP’den doğru pick’i bulur ve paketleme ekranını açar.</li><li>İç ekranda beklenen LP ile okunan LP tekrar karşılaştırılır.</li></ul><div class="control warn">Yanlış LP mesajında ürünü okutmaya çalışmayın. Doğru fiziksel sepeti bulun ve LP’yi yeniden okutun.</div></div><figure><button class="shot" data-full="assets/bade-packing-queue.png"><span class="shot-frame"><img src="assets/bade-packing-queue.png" alt="Paketlemede önce toplama sepeti LP okutma alanı"></span></button><figcaption>Önce toplama sepeti LP’sini okut</figcaption></figure></article>
+
+          <article class="step"><div><span class="step-no">03</span><h3>Ürünleri paketleme sırasıyla okutun</h3><ul><li>LP doğrulandığında <b>Şimdi ürünleri okutun</b> mesajı görünür.</li><li>Ekrandaki aktif sipariş ve kalan ürün miktarına göre ürünü okutun.</li><li>Multi akışta sistem aktif siparişi kilitler; o sipariş tamamlanmadan diğer siparişe geçilmez.</li><li>Okutulan her ürünün paketlenen miktarı ilerleme göstergesine yansır.</li><li><b>Siparişler · göster</b> alanından sipariş bazında durum kontrol edilebilir.</li></ul></div><figure><button class="shot" data-full="assets/bade-packing-queue.png"><span class="shot-frame"><img src="assets/bade-packing-queue.png" alt="Paketleme kuyruk kartları ve sepet numaraları"></span></button><figcaption>Kuyruktaki pick ve sepet kayıtları</figcaption></figure></article>
+
+          <article class="step"><div><span class="step-no">04</span><h3>Ürün bitince koliyi okutun</h3><ul><li>Bir siparişin tüm ürünleri doğrulanmadan koli ekranı açılmaz.</li><li>Sipariş tamamlanınca fiziksel koli barkodunu okutun.</li><li>Her fiziksel koli için <b>benzersiz</b> barkod kullanın; başka siparişte kullanılan barkod reddedilir.</li><li>Hazır koli barkodu yoksa <b>Yeni koli kullan</b> ile sistem kolisi oluşturulabilir.</li><li>Kapatma uzun sürerse uygulama BC durumunu otomatik kontrol eder; sunucuda tamamlanan siparişi yeniden post etmez.</li><li>Tüm ürünler paketlenip tüm siparişler kolilendiğinde pick tamamlanır.</li></ul><div class="control ok">Doğru sıra: <b>Toplama LP’si → ürün(ler) → koli</b>. Koli, ürünlerden önce okutulmaz.</div></div><figure><button class="shot" data-full="assets/bade-packing-queue.png"><span class="shot-frame"><img src="assets/bade-packing-queue.png" alt="V2 paketleme ekranı"></span></button><figcaption>Akış seçimi her aşamada görünür</figcaption></figure></article>
+        </div>
+      </section>
+
+      <section class="section" id="diger-lojistik">
+        <div class="section-head"><div><div class="eyebrow">07 · Gelen + Giden</div><h2>Yerleştirme ve Sevkiyat</h2><p>Mal kabul sonrası ürünün rafa kaldırılması ve paketleme sonrası sevk kaydının tamamlanması.</p></div><span class="tag">BELGE BAZLI</span></div>
+        <div class="page-grid">
+          <article class="page-card"><div><span class="scope">GELEN</span><h3>Yerleştirme</h3><ol><li>BC'de oluşturulmuş açık yerleştirme belgesini numara ile arayın veya listeden açın.</li><li>Kaynak bin'i, ürünü/LP'yi ve önerilen hedef bin'i sırayla doğrulayın.</li><li>Miktarı girin; gerekiyorsa her satır için hedef bin seçin.</li><li>Tüm satırlar tamamlanınca <b>Yerleştirmeyi Kaydet</b> ile register edin.</li></ol><div class="control">Ekranda belge yoksa önce BC'de Warehouse Put-away oluşturulmalıdır.</div></div><figure><button class="shot" data-full="assets/11-yerlestirme.png"><span class="shot-frame"><img src="assets/11-yerlestirme.png" alt="Yerleştirme sayfası"></span></button><figcaption>Yerleştirme listesi</figcaption></figure></article>
+          <article class="page-card"><div><span class="scope">GİDEN</span><h3>Sevkiyat</h3><ol><li>Akışa göre <b>Ambar Toplama</b>, <b>Ambar Sevkiyatı</b> veya <b>Satış Siparişi</b> sekmesini seçin.</li><li><b>Bana atanan</b> veya <b>Tümü</b> filtresiyle belgeyi bulun.</li><li>Pick gerekiyorsa oluşturup toplama ekranında tamamlayın.</li><li>Sevk miktarlarını doğrulayın ve <b>Sevkiyatı Kaydet</b> ile post edin.</li></ol><div class="control warn">Lokasyon Ambar Sevkiyatı zorunlu kılıyorsa satış siparişinden doğrudan sevk edilemez.</div></div><figure><button class="shot" data-full="assets/12-sevkiyat.png"><span class="shot-frame"><img src="assets/12-sevkiyat.png" alt="Sevkiyat sayfası"></span></button><figcaption>Ambar Toplama · Ambar Sevkiyatı · Satış Siparişi</figcaption></figure></article>
+        </div>
+      </section>
+
+      <section class="section" id="ic-operasyon">
+        <div class="section-head"><div><div class="eyebrow">08 · İç operasyon</div><h2>LP, hareket ve sayım</h2><p>Depo içindeki palet/kasa kimliği, serbest taşıma, yönlendirilmiş taşıma ve envanter sayımı.</p></div><span class="tag">RAF + LP</span></div>
+        <div class="page-grid">
+          <article class="page-card"><div><span class="scope">LP</span><h3>LP (Taşıma Kabı)</h3><ol><li>LP numarasını arayın/okutun veya <b>LP Oluştur</b> ile yeni palet-kasa kimliği açın.</li><li>LP kartında lokasyon, bin, durum ve içindeki ürünleri kontrol edin.</li><li>Satır ekleme, LP transferi, kısmi kullanım, kapatma ve etiket yazdırma işlemlerini karttan yapın.</li><li>LP/madde etiketinde LP numarası, madde, <b>paletteki miktar</b>, UOM, lot ve bin basılır.</li><li>Fiziksel etiketteki LP ile ekrandaki LP her zaman aynı olmalıdır.</li></ol><div class="control ok">Sayım postundan sonra LP miktarı güncellenir ve etiket yeni palet miktarıyla yazdırılır.</div></div><figure><button class="shot" data-full="assets/10-lp.png"><span class="shot-frame"><img src="assets/10-lp.png" alt="LP taşıma kabı listesi"></span></button><figcaption>LP listesi · oluşturma ve arama</figcaption></figure></article>
+          <article class="page-card"><div><span class="scope">SERBEST HAREKET</span><h3>Ad-Hoc Hareket</h3><ol><li><b>LP ile</b> veya <b>Ürün ile</b> taşıma yöntemini seçin.</li><li>Kaynak bin'i okutun.</li><li>Taşınacak LP'yi ya da ürün/lot-seri ve miktarı okutun.</li><li>Hedef bin'i okutun ve özeti onaylayın.</li></ol><div class="control warn">Belgesiz depo içi harekettir. Kaynak ve hedef bin doğrulanmadan onay vermeyin.</div></div><figure><button class="shot" data-full="assets/13-adhoc-hareket.png"><span class="shot-frame"><img src="assets/13-adhoc-hareket.png" alt="Ad-Hoc hareket sayfası"></span></button><figcaption>LP ile / Ürün ile hareket</figcaption></figure></article>
+          <article class="page-card"><div><span class="scope">YÖNLENDİRİLMİŞ</span><h3>Yönlendirilmiş Hareket</h3><ol><li><b>Bana atanan</b> veya <b>Tümü</b> filtresinden hareket belgesini açın.</li><li>Sistemin gösterdiği kaynak bin, ürün/LP, miktar ve hedef bin sırasını izleyin.</li><li>Her adımı barkodla doğrulayın.</li><li>Tüm satırlar bitince hareket belgesini kaydedin.</li></ol><div class="control">Liste boşsa BC Movement Worksheet'ten <b>Create Movement</b> ile belge oluşturulmalıdır.</div></div><figure><button class="shot" data-full="assets/14-yonlendirilmis.png"><span class="shot-frame"><img src="assets/14-yonlendirilmis.png" alt="Yönlendirilmiş hareket listesi"></span></button><figcaption>Bana atanan · Tümü</figcaption></figure></article>
+          <article class="page-card"><div><span class="scope">ENVANTER</span><h3>Sayım</h3><ol><li>BC'de hazırlanmış sayım sayfasını numara ile arayın ve açın; gerekirse <b>Satır Üret</b> işlemini sayım başlamadan bir kez çalıştırın.</li><li><b>LP veya ürün okut</b> alanında palet LP'sini okutun; paletteki miktarı LP satırına girin.</li><li>Kör sayımda sistem miktarını görmeden fiili miktarı kaydedin.</li><li>Tüm satırlar tamamlanınca <b>Kaydet</b> ile post edin; LP miktarı güncellenir ve yeni miktarlı etiket yazdırılır.</li></ol><div class="control warn">Komple envanter sayımında fabrika işlemleri durdurulmalı; sayım sırasında mal kabul, sevk ve hareket yapılmamalıdır.</div></div><figure><button class="shot" data-full="assets/15-sayim.png"><span class="shot-frame"><img src="assets/15-sayim.png" alt="Sayım sayfası"></span></button><figcaption>Sayım sayfası listesi</figcaption></figure></article>
+        </div>
+      </section>
+
+      <section class="section" id="uretim">
+        <div class="section-head"><div><div class="eyebrow">09 · Üretim</div><h2>Sarfiyat, çıktı ve montaj</h2><p>Serbest bırakılmış üretim ve montaj emirlerinin el terminalinden işlenmesi.</p></div><span class="tag">BS ÜRETİM</span></div>
+        <div class="page-grid">
+          <article class="page-card"><div><span class="scope">ÜRETİM EMRİ</span><h3>Üretim — Sarfiyat</h3><ol><li><b>Sarfiyat</b> sekmesinde serbest bırakılmış üretim emrini açın.</li><li>Bileşen satırını seçin; bin, LP, lot/seri ve tüketilecek miktarı okutun.</li><li>Kısmi LP tüketiminde yalnız fiili sarf miktarını girin.</li><li>Satırları kontrol edip sarfiyat kaydını post edin.</li></ol><div class="control">Liste için üretim emri Released olmalı ve bileşen satırları bulunmalıdır.</div></div><figure><button class="shot" data-full="assets/16-uretim.png"><span class="shot-frame"><img src="assets/16-uretim.png" alt="Üretim sarfiyat ve çıktı sayfası"></span></button><figcaption>Üretim · Sarfiyat / Çıktı</figcaption></figure></article>
+          <article class="page-card"><div><span class="scope">ÜRETİM EMRİ</span><h3>Üretim — Çıktı</h3><ol><li><b>Çıktı</b> sekmesine geçin ve üretim emrinin operasyon satırını seçin.</li><li>Mamul miktarı, fire ve çalışma süresini girin.</li><li>Mamul lot/seri ile hedef bin'i doğrulayın; gerekiyorsa yeni LP şablonu seçin.</li><li>Çıktıyı post edin ve oluşan LP etiketini mamule yapıştırın.</li></ol><div class="control ok">Yeni LP ile mamul miktarı aynı palet/kasa kimliğinde takip edilir.</div></div><figure><button class="shot" data-full="assets/16-uretim.png"><span class="shot-frame"><img src="assets/16-uretim.png" alt="Üretim çıktı sekmesi"></span></button><figcaption>Çıktı sekmesine üstten geçilir</figcaption></figure></article>
+          <article class="page-card"><div><span class="scope">MONTAJ</span><h3>Montaj</h3><ol><li>Serbest bırakılmış montaj emrini numara ile arayın.</li><li>Emri açıp bileşenleri bin/ürün/lot-seri üzerinden okutun.</li><li>Tüketilen bileşen ve oluşan mamul miktarını karşılaştırın.</li><li>Doğru hedef bin ve LP ile montajı post edin.</li></ol><div class="control">Liste boşsa montaj emri Released olmalıdır.</div></div><figure><button class="shot" data-full="assets/17-montaj.png"><span class="shot-frame"><img src="assets/17-montaj.png" alt="Montaj emirleri sayfası"></span></button><figcaption>Montaj emri arama</figcaption></figure></article>
+          <article class="page-card"><div><span class="scope">CANLI ÖNCESİ</span><h3>Üretim kontrolü</h3><ul><li>Üretim reçetesi ve rota doğru mu?</li><li>Bileşen ve mamul bin'leri tanımlı mı?</li><li>Lot/seri takibi ve numara serileri hazır mı?</li><li>Manuel/otomatik sarfiyat yöntemi net mi?</li><li>Kısmi LP tüketimi ve mamul LP etiketi test edildi mi?</li></ul><div class="control warn">Bu kurgu netleşmeden gerçek üretim emri üzerinde post yapılmamalıdır.</div></div><figure><button class="shot" data-full="assets/03-ana-menu-orta.png"><span class="shot-frame"><img src="assets/03-ana-menu-orta.png" alt="Ana menü üretim ve montaj kutuları"></span></button><figcaption>Üretim menü grubu</figcaption></figure></article>
+        </div>
+      </section>
+
+      <section class="section" id="kalite">
+        <div class="section-head"><div><div class="eyebrow">10 · Kalite</div><h2>Kalite Denetimi ve MS Kalite</h2><p>Açık kalite emirlerini sonuçlandırmak ve ayrıntılı kalite testlerini yönetmek için iki ayrı sayfa.</p></div><span class="tag">KALİTE</span></div>
+        <div class="page-grid">
+          <article class="page-card"><div><h3>Kalite Denetimi</h3><ol><li><b>Açık</b> veya <b>Tümü</b> filtresini seçin.</li><li>QO numarasını arayın ve kalite emrini açın.</li><li>Geçti/kaldı sonucunu, neden ve notu girin.</li><li>Gerekirse karantina bin'ini seçip denetimi tamamlayın.</li></ol></div><figure><button class="shot" data-full="assets/18-kalite-denetimi.png"><span class="shot-frame"><img src="assets/18-kalite-denetimi.png" alt="Kalite Denetimi sayfası"></span></button><figcaption>Kalite emri listesi</figcaption></figure></article>
+          <article class="page-card"><div><h3>MS Kalite Yönetimi</h3><ol><li><b>Sadece Açık</b> filtresiyle denetimleri yükleyin.</li><li>Denetimi açıp test kodlarının ölçüm değerlerini girin.</li><li>Eksik test kalmadığını kontrol edin.</li><li><b>Bitir</b> ile kalite denetimini kapatın.</li></ol><div class="control warn">HTTP 404 görünürse ilgili MS Quality Management API sayfası BC şirketinde yayımlanmamıştır.</div></div><figure><button class="shot" data-full="assets/19-ms-kalite.png"><span class="shot-frame"><img src="assets/19-ms-kalite.png" alt="MS Kalite Yönetimi sayfası"></span></button><figcaption>MS Kalite listesi</figcaption></figure></article>
+        </div>
+      </section>
+
+      <section class="section" id="sorgu">
+        <div class="section-head"><div><div class="eyebrow">11 · Sorgu</div><h2>Ürün, bin ve ambar hareketleri</h2><p>Bu sayfalar kayıt oluşturmaz; mevcut Business Central verisini operatöre gösterir.</p></div><span class="tag">SALT OKUMA</span></div>
+        <div class="page-grid">
+          <article class="page-card"><div><h3>Ürün Sorgu</h3><ol><li>Ürün numarasını yazın veya barkodu okutun.</li><li><b>Sorgula</b> ile toplam stok, kullanılabilir miktar, lokasyon/bin ve LP dağılımını açın.</li><li>Lot/seri bilgisi görünüyorsa fiziksel etiketle karşılaştırın.</li></ol></div><figure><button class="shot" data-full="assets/20-urun-sorgu.png"><span class="shot-frame"><img src="assets/20-urun-sorgu.png" alt="Ürün Sorgu sayfası"></span></button><figcaption>Ürün numarası veya barkod</figcaption></figure></article>
+          <article class="page-card"><div><h3>Bin Sorgu</h3><ol><li>Lokasyonu seçin/yazın.</li><li>Bin barkodunu okutun.</li><li><b>Sorgula</b> ile bin içindeki ürünleri, miktarları ve LP'leri görüntüleyin.</li></ol><div class="control">Sonuç 0 ise aktif şirket, lokasyon ve bin kodunu tekrar kontrol edin.</div></div><figure><button class="shot" data-full="assets/21-bin-sorgu.png"><span class="shot-frame"><img src="assets/21-bin-sorgu.png" alt="Bin Sorgu sayfası"></span></button><figcaption>Lokasyon + Bin</figcaption></figure></article>
+          <article class="page-card"><div><h3>Ambar Hareketleri</h3><ol><li><b>Filtrele</b> alanını açın.</li><li>Tarih, lokasyon, bin, ürün, LP, lot veya seri filtresi girin.</li><li>Yenileyin ve oluşan hareket satırlarını inceleyin.</li><li>Post edilen mal kabul, taşıma, sayım ve sevk etkisini buradan doğrulayın.</li></ol></div><figure><button class="shot" data-full="assets/22-ambar-hareketleri.png"><span class="shot-frame"><img src="assets/22-ambar-hareketleri.png" alt="Ambar Hareketleri sayfası"></span></button><figcaption>Filtrelenebilir hareket geçmişi</figcaption></figure></article>
+        </div>
+      </section>
+
+      <section class="section" id="sistem">
+        <div class="section-head"><div><div class="eyebrow">12 · Sistem</div><h2>Cihaz, yazıcı ve test sayfaları</h2><p>Operatör ekran görünümünü, bağlantı sağlığını ve yazıcı varsayılanlarını yönetir. Test sayfaları yalnız yetkili kullanıcı içindir.</p></div><span class="tag">YÖNETİM</span></div>
+        <div class="page-grid">
+          <article class="page-card"><div><h3>Alan Ayarları</h3><ul><li>Satır kartlarında UOM, varyant, satıcı barkodu, lot/seri ve açıklama 2 alanlarını açıp kapatın.</li><li>Önizlemeyi kontrol edin.</li><li>Ayar bu cihaza özeldir ve desteklenen ekranlarda ortak kullanılır.</li></ul></div><figure><button class="shot" data-full="assets/23-alan-ayarlari.png"><span class="shot-frame"><img src="assets/23-alan-ayarlari.png" alt="Alan Ayarları sayfası"></span></button><figcaption>Görünen satır alanları</figcaption></figure></article>
+          <article class="page-card"><div><h3>Sistem Sağlığı</h3><ul><li><b>Tümünü Çalıştır</b> ile bağlantı, kimlik, API, modül ve cihaz kontrollerini başlatın.</li><li>Kırmızı sonuç varsa ayrıntıyı açın; ekran görüntüsüyle destek ekibine iletin.</li><li>İşleme ancak kritik kontroller yeşil olduğunda başlayın.</li></ul></div><figure><button class="shot" data-full="assets/24-sistem-sagligi.png"><span class="shot-frame"><img src="assets/24-sistem-sagligi.png" alt="Sistem Sağlığı sayfası"></span></button><figcaption>Bağlantı ve modül kontrolleri</figcaption></figure></article>
+          <article class="page-card"><div><h3>Yazıcılar</h3><ul><li><b>Yenile</b> ile Print Agent'tan eşitlenen yazıcıları getirin.</li><li>Etiket ve belge için varsayılan yazıcıyı seçin.</li><li>Barkod baskı testinde kodu okutun ve test PDF'sini seçili belge yazıcısına gönderin.</li></ul><div class="control warn">Kayıtlı yazıcı yoksa Windows Print Agent çalışmalı ve Buluta Eşitle yapılmalıdır.</div></div><figure><button class="shot" data-full="assets/25-yazicilar.png"><span class="shot-frame"><img src="assets/25-yazicilar.png" alt="Yazıcılar sayfası"></span></button><figcaption>Yazıcı seçimi ve barkod baskı testi</figcaption></figure></article>
+          <article class="page-card"><div><h3>Test Merkezi</h3><ul><li>BC'de çalıştırılmış test koşularını ve sonuçlarını listeler.</li><li>Yenileyip TR numarasını açarak geçen/kalan senaryoları inceleyin.</li><li>Operasyon kaydı oluşturmaz.</li></ul></div><figure><button class="shot" data-full="assets/26-test-merkezi.png"><span class="shot-frame"><img src="assets/26-test-merkezi.png" alt="Test Merkezi sayfası"></span></button><figcaption>Test run sonuçları</figcaption></figure></article>
+          <article class="page-card"><div><h3>Kayıt Testi</h3><ul><li>Her WMS post/register aksiyonu için BC'de gerçek test belgesi oluşturur.</li><li>Yalnız test şirketinde ve yetkili kullanıcıyla çalıştırın.</li><li>Canlı şirkette <b>Tüm Postingleri Test Et</b> düğmesine basmayın.</li></ul><div class="control danger">Bu sayfa gerçek kayıt oluşturabilir; günlük operatör kullanımı için değildir.</div></div><figure><button class="shot" data-full="assets/27-kayit-testi.png"><span class="shot-frame"><img src="assets/27-kayit-testi.png" alt="Kayıt Testi sayfası"></span></button><figcaption>BC posting testi</figcaption></figure></article>
+          <article class="page-card"><div><h3>Bağlantı</h3><ul><li>Operatör hesabı, ortam/sandbox ve şirket seçimini yönetir.</li><li>Vardiya değişiminde doğru operatörle yeniden giriş yapın.</li><li>Üstteki <b>Bağlı</b> rozeti de aynı sayfayı açar.</li></ul></div><figure><button class="shot" data-full="assets/00-baglanti-giris.png"><span class="shot-frame"><img src="assets/00-baglanti-giris.png" alt="Bağlantı ve operatör seçimi"></span></button><figcaption>Bağlantı Ayarları</figcaption></figure></article>
+        </div>
+      </section>
+
+      <section class="section" id="sss">
+        <div class="section-head"><div><div class="eyebrow">13 · Sorabilecekleriniz</div><h2>Sahada aklınıza gelebilecekler</h2><p>Bir işlem beklediğiniz gibi ilerlemediğinde önce buraya bakın. Multi, Mono, Tek SKU, sepet/LP, mal kabul, tedarikçi lotu, paketleme ve Business Central kayıtları için doğrudan uygulanabilir cevaplar bulacaksınız.</p></div><span class="tag">SORU / CEVAP</span></div>
+
+        <h3>Multi, Mono ve Tek SKU nasıl ayrılır?</h3>
+        <p>Sistem satış siparişlerindeki <b>açık ürün satırı sayısına</b>, ürün-varyant tekrarına ve lokasyona bakar. Siparişin toplam miktarı sınıflandırmayı değiştirmez.</p>
+        <table class="example-table" style="margin:14px 0 20px">
+          <thead><tr><th>Örnek sipariş içeriği</th><th>Akış</th><th>Neden?</th></tr></thead>
+          <tbody>
+            <tr><td>1 sipariş · A ürünü · miktar 2 · tek açık ürün satırı</td><td>Mono</td><td>Üründen 2 adet olsa da yalnız bir ürün satırı vardır ve A, seçilen diğer tek satırlı siparişlerde tekrarlanmıyordur.</td></tr>
+            <tr><td>1 sipariş · A ve B ürünleri · iki açık ürün satırı</td><td>Multi</td><td>Siparişte iki veya daha fazla açık ürün satırı vardır.</td></tr>
+            <tr><td>1 sipariş · A ürünü iki ayrı satış satırında</td><td>Multi</td><td>SKU aynı olsa bile açık ürün satırı sayısı 2'dir.</td></tr>
+            <tr><td>3 sipariş · her birinde yalnız A ürünü</td><td>Tek SKU</td><td>Aynı lokasyondaki birden fazla tek satırlı sipariş aynı ürün-varyantı içerir.</td></tr>
+            <tr><td>3 sipariş · birinde A, birinde B, birinde C; her biri tek satır</td><td>Mono</td><td>Her sipariş tek satırlıdır ve SKU'lar seçimin içinde benzersizdir.</td></tr>
+            <tr><td>1 ürün satırı + açıklama/yorum satırı</td><td>Mono</td><td>Yalnız <b>Madde</b> tipindeki açık satırlar sayılır.</td></tr>
+          </tbody>
+        </table>
+
+        <div class="faq">
+          <details open><summary>Multi toplama tam olarak nedir?</summary><div class="faq-answer"><p>Bir siparişte iki veya daha fazla açık ürün satırı bulunuyorsa sipariş <b>Multi</b> grubuna girer. Aynı grupta birden fazla sipariş ve farklı ürünler bulunabilir.</p><ul><li>Operatör raf rotasını izler.</li><li>Aynı ürün farklı siparişlerde isteniyorsa toplam ihtiyaç tek toplamada alınabilir.</li><li>Sistem toplanan miktarı ilgili sipariş satırlarına dağıtır.</li><li>Paketlemede her siparişin ürünleri ayrı ayrı doğrulanıp kendi kolisine bağlanır.</li></ul><p><b>Örnek:</b> Sipariş 1'de A+B, Sipariş 2'de A+C varsa Multi akışıdır.</p></div></details>
+
+          <details open><summary>Mono toplama nedir? Siparişte miktar 2 ise yine Mono olur mu?</summary><div class="faq-answer"><p>Evet. <b>Mono</b>, siparişte yalnız bir açık ürün satırı olması demektir; miktarın mutlaka 1 olması gerekmez.</p><p><b>Örnek:</b> Siparişte A ürününden 2 adet tek satırda yazıyorsa ve A ürünü seçilen diğer tek satırlı siparişlerde tekrarlanmıyorsa sipariş Mono'dur. Operatör rafta A'yı doğrular, 2 adedi sepete koyar ve siparişi tamamlar.</p></div></details>
+
+          <details open><summary>Mono grubunda bir siparişte iki ürün/satır görürsem ne yapmalıyım?</summary><div class="faq-answer"><p>Önce bunun <b>iki adet</b> mi, yoksa gerçekten <b>iki ayrı açık ürün satırı</b> mı olduğunu kontrol edin.</p><ul><li>Tek satır, miktar 2 ise doğrudur: Mono olabilir.</li><li>İki ayrı açık Madde satırı varsa normalde Multi olmalıdır.</li><li>Aynı ürün iki ayrı satış satırında tekrar ediyorsa yine Multi olmalıdır.</li></ul><p>Gerçekten iki ürün satırı Mono'da kaldıysa eski/manuel oluşturulmuş grup olabilir. Pick oluşturmadan grubu yeniden ayırın veya depo sorumlusuna bildirin.</p></div></details>
+
+          <details><summary>Tek SKU toplama ile Mono arasındaki fark nedir?</summary><div class="faq-answer"><p>İkisinde de her sipariş tek açık ürün satırı içerir. Fark, ürünün diğer siparişlerde tekrarlanıp tekrarlanmamasıdır.</p><ul><li><b>Mono:</b> Her siparişin ürünü farklıdır. Örnek: A, B ve C.</li><li><b>Tek SKU:</b> Birden fazla siparişin ürünü aynıdır. Örnek: üç siparişin de ürünü A.</li></ul><p>Tek SKU'da ortak ürün toplu alınır ve miktar sipariş paylarına otomatik dağıtılır.</p></div></details>
+
+          <details><summary>Varyantlı ürünlerde sistem nasıl ayırır?</summary><div class="faq-answer"><p>SKU anahtarı <b>ürün numarası + varyant kodudur</b>. Aynı ürünün kırmızı ve mavi varyantları farklı SKU kabul edilir. Tek SKU grubuna girmeleri için hem ürün hem varyant aynı olmalıdır.</p></div></details>
+
+          <details><summary>Farklı lokasyonlardaki siparişler aynı gruba girebilir mi?</summary><div class="faq-answer"><p>Hayır. Gruplama lokasyon bazındadır. Aynı siparişin açık ürün satırları farklı lokasyon içeriyorsa otomatik ayırma hata verir; önce satış siparişindeki lokasyonlar düzeltilmelidir.</p></div></details>
+
+          <details><summary>Otomatik ayırma düğmesi Pick belgesini de otomatik oluşturur mu?</summary><div class="faq-answer"><p>Hayır. Otomatik ayırma yalnız satış siparişlerini uygun <b>Multi / Mono / Tek SKU toplama gruplarına</b> yerleştirir.</p><ol><li>Depo sorumlusu grupları kontrol eder.</li><li>Toplayıcıları atar.</li><li>Tek grup için <b>Pick Oluştur / Post Et</b>, birden çok hazır grup için listede işaretleyip <b>Seçili Grupları Terminale Gönder</b> der.</li><li>Boş kaynak rafı bulunan grup terminale gönderilmez; önce bin içeriği düzeltilir.</li></ol><p>Böylece sistem kullanıcı onayı olmadan kendiliğinden ambar toplama belgesi oluşturmaz.</p></div></details>
+
+          <details><summary>Bir satış siparişi neden yeniden gruba eklenmiyor?</summary><div class="faq-answer"><p>Siparişin zaten açık/kaydedilmiş bir pick'i veya aktif toplama grubu varsa tekrar eklenmez. “Sales order … is already in picking order …” uyarısı bu korumadır.</p><p>Mevcut toplama grubunu veya ambar toplama belgesini bulun; iptal edilmesi gerekiyorsa yetkili kullanıcıyla mevcut kayıt temizlenmeden yeni grup oluşturmayın.</p></div></details>
+
+          <details><summary>Toplayıcı atandı ama el terminalinde görünmüyor. Neden?</summary><div class="faq-answer"><ul><li>El terminalinde aynı WMS kullanıcısıyla giriş yapılmış olmalı.</li><li>Doğru şirket ve lokasyon seçili olmalı.</li><li>BC'de kullanıcı ilgili lokasyon için <b>Ambar Çalışanı</b> olarak tanımlı olmalı.</li><li><b>Bana atanan</b> filtresini yenileyin; gerekirse <b>Tümü</b> görünümünden belgeyi kontrol edin.</li></ul></div></details>
+
+          <details><summary>Toplama sepeti ile LP aynı şey mi?</summary><div class="faq-answer"><p>Bu akışta toplama sepeti sistemde bir <b>LP</b> ile temsil edilir. Fiziksel sepetin üzerindeki LP barkodu, sepetin sistemdeki tekil kimliğidir.</p><ul><li>Toplamada ürünler bu LP'ye bağlanır.</li><li>Paketlemede önce aynı LP okutularak doğru sepetin geldiği doğrulanır.</li><li>Sepet değişirse ekrandaki <b>Farklı bir sepet okut / değiştir</b> işlemi kullanılmalıdır.</li></ul></div></details>
+
+          <details><summary>“Önerilen sepeti kullan” dediğimde ne olur?</summary><div class="faq-answer"><p>Sistem yeni bir LP/sepet numarası oluşturur ve aktif pick'e bağlar. Oluşan numaranın fiziksel sepete ait etiketi basılmalı veya ekrandaki numara fiziksel kapla açık şekilde eşleştirilmelidir. Elinizde mevcut etiketli sepet varsa yeni oluşturmak yerine onu okutun.</p></div></details>
+
+          <details><summary>Paketlemede neden önce LP, sonra ürün, en son koli okutuluyor?</summary><div class="faq-answer"><p>Sıra <b>LP → ürün → koli</b> şeklindedir:</p><ol><li>LP, doğru toplama sepetinin geldiğini doğrular.</li><li>Ürün okutması sipariş içeriğinin doğru olduğunu doğrular.</li><li>Tüm ürünler bittikten sonra koli, doğrulanmış ürünleri sevk kabına bağlar.</li></ol><p>Ürünler doğrulanmadan koli açılırsa yanlış siparişin yanlış koliye bağlanma riski oluşur.</p></div></details>
+
+          <details><summary>Mal kabulde iç lot ile tedarikçi lotu arasındaki fark nedir?</summary><div class="faq-answer"><ul><li><b>Lot No:</b> Şirketin Business Central içindeki takip numarasıdır; numara serisinden otomatik gelebilir.</li><li><b>Tedarikçi Lotu:</b> Tedarikçinin ambalajında veya sertifikasında yazan lot numarasıdır; terminalden okutulur/yazılır.</li></ul><p>İki alan aynı olmak zorunda değildir. Post sonrası ilişki BC'deki <b>Lot No Bilgi Kartı</b> üzerinde izlenir.</p></div></details>
+
+          <details><summary>Tedarikçi Lotu Lookup ne zaman kullanılır?</summary><div class="faq-answer"><p>Daha önce BC'de tanımlanmış bir iç lot–tedarikçi lotu eşleşmesi varsa Lookup'tan aranıp seçilir. Yeni tedarikçi lotu listede yoksa etiketten okutulur veya elle girilir. Seçimden sonra hem iç lotu hem tedarikçi lotunu tekrar kontrol edin.</p></div></details>
+
+          <details><summary>Mal kabulde “Onayla” ile “Kaydet (post)” aynı işlem mi?</summary><div class="faq-answer"><p>Hayır.</p><ul><li><b>Onayla:</b> Miktar, UOM, lot, tedarikçi lotu ve LP bilgisini mal kabul satırına hazırlar.</li><li><b>Kaydet (post):</b> Hazırlanan tüm satırları Business Central'a işler ve ambar mal kabul kaydını oluşturur.</li></ul><p>Son posttan önce toplam satır ve miktar özetini kontrol edin.</p></div></details>
+
+          <details><summary>Post edilen veri Business Central'da nerede görülür?</summary><div class="faq-answer"><ul><li>Mal kabul sonucu: <b>Kayıtlı Ambar Mal Kabulleri / Ambar Hareketleri</b>.</li><li>İç lot ve tedarikçi lotu: <b>Lot No Bilgi Kartı</b>.</li><li>LP içeriği ve konumu: <b>License Plates</b> ve LP kartı.</li><li>Toplama/sevkiyat sonucu: kayıtlı ambar toplama, sevkiyat ve ambar hareketleri.</li><li>Terminalden hızlı doğrulama: <b>Ambar Hareketleri</b>, <b>Ürün Sorgu</b> veya <b>Bin Sorgu</b>.</li></ul></div></details>
+
+          <details><summary>Sayımda LP kullanınca ne kaydedilir?</summary><div class="faq-answer"><p>Palet/kasa üzerindeki LP okutulur ve o fiziksel kapta sayılan gerçek miktar girilir. Böylece yalnız ürünün toplam stoğu değil, sayılan miktarın hangi palet/LP üzerinde olduğu da korunur. Komple envanter sayımında işlem hareketleri durdurulmalı ve her fiziksel LP yalnız bir kez sayılmalıdır.</p></div></details>
+
+          <details><summary>Bir sayfa boş görünüyorsa uygulama bozuk mudur?</summary><div class="faq-answer"><p>Her zaman değil. Çoğu operasyon sayfası BC'de hazırlanmış açık belge bekler.</p><ul><li>Yerleştirme için açık Warehouse Put-away.</li><li>Yönlendirilmiş hareket için Movement belgesi.</li><li>Sayım için Count Sheet.</li><li>Üretim/montaj için Released emir.</li><li>Kalite için açık kalite emri.</li></ul><p>Önce doğru şirketi, filtreyi ve belge durumunu kontrol edin.</p></div></details>
+
+          <details><summary>V2 düğmesini ne zaman açık tutmalıyım?</summary><div class="faq-answer"><p>BADE toplama ve paketlemede Multi / Mono / Tek SKU akışları için V2 açık olmalıdır. Mal kabul, LP, sayım ve diğer klasik operasyonlarda V2 rozeti görünse de ilgili sayfanın temel belge mantığını değiştirmez.</p></div></details>
+        </div>
+      </section>
+
+      <section class="section" id="hatalar">
+        <div class="section-head"><div><div class="eyebrow">14 · Kontrol</div><h2>Sık uyarılar ve yapılacaklar</h2></div><span class="tag">OPERATÖR REFERANSI</span></div>
+        <table>
+          <thead><tr><th>Uyarı / Durum</th><th>Anlamı</th><th>Yapılacak işlem</th></tr></thead>
+          <tbody>
+            <tr><td>Belge görünmüyor</td><td>Yanlış şirket, atama filtresi veya belge durumu.</td><td>Şirketi kontrol edin; <b>Tümü</b> filtresine geçin; belge no ile arayın.</td></tr>
+            <tr><td>Kullanıcı Ambar Çalışanı değil</td><td>Kullanıcının lokasyon için Warehouse Employee kaydı yok.</td><td>BC yöneticisine kullanıcı + lokasyon bilgisini iletin. Başka kullanıcıyla devam etmeyin.</td></tr>
+            <tr><td>Tedarikçi Lotu zorunlu</td><td>Satır onayı için tedarikçi lotu gereklidir.</td><td>Etiketten okutun, yazın veya Lookup’tan seçin.</td></tr>
+            <tr><td>Yanlış raf</td><td>Okunan raf, sistemin sıradaki rafı değil.</td><td>Ekrandaki raf koduna gidin ve raf barkodunu yeniden okutun.</td></tr>
+            <tr><td>Yanlış ürün</td><td>Ürün aktif raf/sipariş için beklenmiyor.</td><td>Ürünü sepete/koliye koymayın; ürün ve raf etiketini kontrol edin.</td></tr>
+            <tr><td>Yanlış LP</td><td>Paketlemede okunan sepet, pick’in ana LP’si değil.</td><td>Doğru toplama sepetini bulun. LP eşleşmeden ürün okutulamaz.</td></tr>
+            <tr><td>Önce satırlara miktar girin</td><td>Mal kabulde hiçbir satır operatör tarafından hazırlanmadı.</td><td>Ürünü okutun, miktar/lotları onaylayın; sonra post edin.</td></tr>
+            <tr><td>Sevk edilebilir satır yok</td><td>Sipariş açık miktarı, lokasyon veya stok uygun değil.</td><td>BC’de sipariş satırı, lokasyon, açık miktar ve önceki pick/sevk kaydını kontrol ettirin.</td></tr>
+          </tbody>
+        </table>
+        <div class="callout danger"><b>Post/kayıt hatasında</b>Aynı düğmeye peş peşe basmayın. Belgeyi yenileyin, durumunu kontrol edin; hata devam ederse belge no, kullanıcı, şirket, saat ve ekran görüntüsüyle destek kaydı açın.</div>
+      </section>
+
+      <section class="section" id="kontrol-listesi">
+        <div class="section-head"><div><div class="eyebrow">15 · Vardiya kontrolü</div><h2>Kullanıcı kontrol listesi</h2><p>Canlı işlem öncesi ve sonrası kısa saha kontrolü.</p></div><span class="tag">YAZDIRILABİLİR</span></div>
+        <h3>Mal Kabul · BS Üretim</h3>
+        <ul class="checklist"><li>BS Üretim şirketi seçili</li><li>Belge no ve lokasyon doğru</li><li>Palet/kasa için LP başlatıldı</li><li>Miktar ve UOM doğru</li><li>İç lot girildi/otomatik geldi</li><li>Tedarikçi lotu girildi veya lookup’tan seçildi</li><li>LP kapatıldı ve etiket alındı</li><li>Post özetindeki satır ve miktar kontrol edildi</li></ul>
+        <h3 style="margin-top:20px">Toplama + Paketleme · BADE</h3>
+        <ul class="checklist"><li>BADE şirketi seçili</li><li>Doğru akış: Multi / Mono / Tek SKU</li><li>Pick doğru kullanıcıya atanmış</li><li>Toplama sepeti LP’si doğrulandı</li><li>Her raf barkodu ürünlerden önce okutuldu</li><li>Tüm ürünler bitince Pick post edildi</li><li>Paketlemede aynı toplama LP’si okutuldu</li><li>Ürünler bitmeden koli okutulmadı</li></ul>
+        <div class="footer">DynamicsOps · BCWMS El Terminali Kullanıcı Kılavuzu · Android 1.14.5-bade · AL 1.14.0.20 · sand1506</div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Ekran görüntüsü"><button type="button" aria-label="Kapat">×</button><img src="" alt="Büyütülmüş ekran görüntüsü"></div>
+<script>
+  const links=[...document.querySelectorAll('.rail a')];
+  const sections=[...document.querySelectorAll('.section')];
+  const markActive=()=>{let current=sections[0]?.id;for(const s of sections){if(s.getBoundingClientRect().top<130)current=s.id}links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+current))};
+  addEventListener('scroll',markActive,{passive:true});markActive();
+  const lightbox=document.getElementById('lightbox');const lightImg=lightbox.querySelector('img');
+  document.querySelectorAll('.shot').forEach(btn=>btn.addEventListener('click',()=>{lightImg.src=btn.dataset.full;lightImg.alt=btn.querySelector('img').alt;lightbox.classList.add('open')}));
+  const close=()=>lightbox.classList.remove('open');lightbox.querySelector('button').addEventListener('click',close);lightbox.addEventListener('click',e=>{if(e.target===lightbox)close()});addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+</script>
+</body>
+</html>

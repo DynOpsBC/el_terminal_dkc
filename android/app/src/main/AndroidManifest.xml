@@ -1,0 +1,56 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.CAMERA" />
+  <!-- Donanım barkod okuyuculu terminaller kameraya ihtiyaç duymaz. -->
+  <uses-feature android:name="android.hardware.camera" android:required="false" />
+  <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+  <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+  <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
+  <queries>
+    <intent>
+      <action android:name="android.intent.action.VIEW" />
+      <data android:scheme="content" />
+    </intent>
+  </queries>
+
+  <application
+    android:name=".BcwmsApplication"
+    android:allowBackup="false"
+    android:icon="@drawable/ic_wms_launcher"
+    android:label="${appLabel}"
+    android:supportsRtl="true"
+    android:theme="@style/AppTheme">
+
+    <activity
+      android:name=".MainActivity"
+      android:exported="true"
+      android:launchMode="singleTop"
+      android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation|density|fontScale|uiMode|locale|layoutDirection">
+      <!-- singleTop = DataWedge intent'i geldiğinde MainActivity yeniden create
+           edilmez, sadece onNewIntent() tetiklenir. Activity state korunur. -->
+      <!-- configChanges: cihaz döndürülünce / klavye açılınca Activity yeniden
+           YARATILMAZ. Aksi halde açık belge, okutulan satırlar ve form alanları
+           sıfırlanıyordu (operatör telefonu yan çevirince işini kaybediyordu).
+           Compose zaten yeni boyuta göre kendini yeniden çizer. -->
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+      <intent-filter>
+        <action android:name="com.dynops.bcwms.SCAN" />
+        <category android:name="android.intent.category.DEFAULT" />
+      </intent-filter>
+    </activity>
+    <provider
+      android:name="androidx.core.content.FileProvider"
+      android:authorities="${applicationId}.fileprovider"
+      android:exported="false"
+      android:grantUriPermissions="true">
+      <meta-data
+        android:name="android.support.FILE_PROVIDER_PATHS"
+        android:resource="@xml/file_provider_paths" />
+    </provider>
+  </application>
+</manifest>

@@ -1,0 +1,15 @@
+// API latency by endpoint and verb for the last 24 hours.
+// Use this panel for p50/p95/p99 RC gates and AppSource validation evidence.
+requests
+| where timestamp > ago(24h)
+| where cloud_RoleName has_any ("BCWMSApp", "push-relay", "businesscentral")
+| extend endpoint = tostring(parse_url(url).Path), verb = tostring(customDimensions["HttpMethod"])
+| extend verb = iff(isempty(verb), tostring(name), verb)
+| summarize
+    count=count(),
+    failures=countif(success == false),
+    p50=percentile(duration, 50),
+    p95=percentile(duration, 95),
+    p99=percentile(duration, 99)
+  by endpoint, verb
+| order by p95 desc

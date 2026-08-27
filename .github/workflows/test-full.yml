@@ -1,0 +1,142 @@
+name: Full Test Suite
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch: {}
+
+# Limit concurrency per-ref so two pushes to the same branch don't double-bill.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  android:
+    name: Android (lint + unit + assemble)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: "platform-tools platforms;android-35 build-tools;35.0.0"
+      - name: Gradle wrapper executable
+        working-directory: android
+        run: chmod +x gradlew
+      - name: Run lint + unit + assemble
+        working-directory: android
+        run: ./gradlew :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
+      - name: Upload lint report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: android-lint
+          path: android/app/build/reports/lint-results-debug.html
+
+  web:
+    name: Web (typecheck + build + vitest + playwright)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 9.12.3
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+      - name: Install web deps
+        working-directory: web
+        run: pnpm install --frozen-lockfile
+      - name: Typecheck + build
+        working-directory: web
+        run: |
+          pnpm typecheck
+          pnpm build
+      - name: Vitest (unit)
+        working-directory: web
+        run: pnpm exec vitest run --passWithNoTests
+      - name: Install Playwright browsers
+        working-directory: web
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Playwright e2e
+        working-directory: web
+        run: pnpm exec playwright test
+      - name: Upload Playwright traces
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-traces
+          path: web/test-results/
+
+  push-relay:
+    name: Push relay (Azure Functions TS)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 9.12.3
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+          cache: pnpm
+          cache-dependency-path: push-relay/pnpm-lock.yaml
+      - name: Install
+        working-directory: push-relay
+        run: pnpm install --frozen-lockfile
+      - name: Build + test
+        working-directory: push-relay
+        run: |
+          pnpm build
+          pnpm test
+
+  licensing:
+    name: Licensing service (Azure Functions TS)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 9.12.3
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+          cache: pnpm
+          cache-dependency-path: licensing-service/pnpm-lock.yaml
+      - name: Install
+        working-directory: licensing-service
+        run: pnpm install --frozen-lockfile
+      - name: Build + test
+        working-directory: licensing-service
+        run: |
+          pnpm build
+          pnpm test
+
+  customer-portal:
+    name: Customer portal (Vite)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 9.12.3
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+          cache: pnpm
+          cache-dependency-path: customer-portal/pnpm-lock.yaml
+      - name: Install
+        working-directory: customer-portal
+        run: pnpm install --frozen-lockfile
+      - name: Typecheck + build
+        working-directory: customer-portal
+        run: |
+          pnpm typecheck
+          pnpm build

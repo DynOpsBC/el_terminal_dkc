@@ -1,0 +1,7 @@
+.alpackages/
+.alcache/
+.netpackages/
+*.app
+rad.json
+*.g.xlf
+

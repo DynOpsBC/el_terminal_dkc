@@ -1,0 +1,15 @@
+<resources>
+    <string name="count_sheet_title">Count Sheets</string>
+    <string name="count_blind_mode">Blind Count</string>
+    <string name="count_sheet_no">Sheet No.</string>
+    <string name="count_item_no">Item No.</string>
+    <string name="count_bin_code">Bin Code</string>
+    <string name="count_lp_no">LP No.</string>
+    <string name="count_system_qty">System Qty</string>
+    <string name="count_counted_qty">Counted Qty</string>
+    <string name="count_variance">Variance</string>
+    <string name="count_recount_required">Recount Required</string>
+    <string name="count_post">Post Count Sheet</string>
+    <string name="count_start_recount">Start Recount</string>
+    <string name="count_reveal_qty">Reveal System Qty</string>
+</resources>

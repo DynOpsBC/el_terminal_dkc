@@ -1,0 +1,81 @@
+# OS/editor
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/settings.json
+
+# AL
+al/.alpackages/
+al/.alcache/
+al/.netpackages/
+al/**/*.app
+al/rad.json
+al/**/*.g.xlf
+
+# Android
+android/.gradle/
+android/**/build/
+android/local.properties
+android/**/*.apk
+android/**/*.aab
+android/**/*.keystore
+android/**/*.jks
+
+# Node / web / Azure Functions
+node_modules/
+dist/
+coverage/
+.turbo/
+*.tsbuildinfo
+web/node_modules/
+push-relay/node_modules/
+push-relay/dist/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+
+# Screenshots from MCP test runs
+web/.screenshots/
+web/.tmp-inject.js
+
+# Local design preview captures
+.snapshots/
+licensing-service/node_modules/
+licensing-service/dist/
+licensing-service/pnpm-lock.yaml
+customer-portal/node_modules/
+customer-portal/dist/
+customer-portal/pnpm-lock.yaml
+customer-portal/api/node_modules/
+customer-portal/api/dist/
+customer-portal/api/pnpm-lock.yaml
+push-relay/pnpm-lock.yaml
+local.settings.json
+licensing-service/package-lock.json
+.claude/settings.local.json
+.playwright-mcp/
+
+# Yeni DKC kaynak deposuna eski BADE müşteri paketleri ve yerel derleme
+# çıktıları taşınmaz. Dosyalar yerel kopyada korunur; yalnız Git'e eklenmez.
+/.albuild/
+/build/
+/build-artifacts/
+/output/
+/tmp/
+/releases/customer/
+/releases/windows/
+releases/**/*.zip
+releases/**/*.app
+
+# Release APK'lari depoda tutulmaz: her biri ~30 MB, git gecmisini sisiriyordu
+# (27 APK = 805 MB, .git 512 MB'a cikmisti). Yayinlanan surumler GitHub
+# Releases'e yuklenir. Bilerek eklemek gerekirse: git add -f <dosya>
+releases/**/*.apk
+
+# Public DKC deposuna müşteri/test ekran görüntüleri ve yerel AI oturum
+# dökümü gönderilmez. Dosyalar çalışma kopyasında korunur.
+/test-artifacts/
+/docs/claude-session-log.md

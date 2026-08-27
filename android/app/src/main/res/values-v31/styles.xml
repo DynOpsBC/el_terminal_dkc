@@ -1,0 +1,10 @@
+<resources>
+  <style name="AppTheme" parent="android:style/Theme.Material.Light.NoActionBar">
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:windowActionBar">false</item>
+    <item name="android:windowSplashScreenBackground">#F6F7F9</item>
+    <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_wms_launcher</item>
+    <item name="android:windowSplashScreenIconBackgroundColor">#F6F7F9</item>
+    <item name="android:windowSplashScreenAnimationDuration">250</item>
+  </style>
+</resources>
