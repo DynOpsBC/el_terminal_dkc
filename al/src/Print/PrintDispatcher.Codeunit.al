@@ -214,7 +214,7 @@ codeunit 72051 "DOPSWHS Print Dispatcher"
                     if ItemNo <> LPLine."Item No." then
                         MixedItems := true;
                 if not LotInitialized then begin
-                    LotNo := LPLine."Lot No."
+                    LotNo := LPLine."Lot No.";
                     LotInitialized := true;
                 end else
                     if LotNo <> LPLine."Lot No." then
