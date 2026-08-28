@@ -83,8 +83,8 @@ android {
       applicationIdSuffix = ".emu"
       // DKC deposu kendi monoton sürümünü ve yayın kanalını taşır. BADE'nin
       // versionCode'u veya GitHub manifesti bu APK'yı etkileyemez.
-      versionCode = releaseVersionCodeOverride ?: 1448
-      versionName = releaseVersionNameOverride ?: "1.14.48"
+      versionCode = releaseVersionCodeOverride ?: 200059
+      versionName = releaseVersionNameOverride ?: "1.14.59"
       versionNameSuffix = "-emu"
       manifestPlaceholders["appLabel"] = "BCWMS EMU"
       buildConfigField("String", "BC_CLIENT_ID", "\"9f9a9965-f358-4b0b-a89e-923f1d8b7a04\"")

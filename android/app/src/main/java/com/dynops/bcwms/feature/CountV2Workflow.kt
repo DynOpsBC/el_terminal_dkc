@@ -50,6 +50,32 @@ internal fun validateCountV2Label(resolved: ResolvedBarcode): CountV2LabelResult
     )
 }
 
+/** Miktarsız ürün okutması: madde no (+ varsa lot/seri) belli, miktar BC stok bilgisinden çözülecek. */
+internal data class CountV2ManualCandidate(
+    val itemNo: String,
+    val lotNo: String,
+    val serialNo: String,
+    val raw: String,
+)
+
+/** LP, lot veya madde barkodunu V2 otomatik sayım çözümlemesine hazırlar. */
+internal fun countV2ManualCandidate(resolved: ResolvedBarcode): CountV2ManualCandidate? {
+    if (resolved.quantity != null) return null
+    val itemNo = when (resolved.kind) {
+        BarcodeKind.Item -> resolved.itemNo?.trim().orEmpty().ifBlank { resolved.value.trim() }
+        BarcodeKind.Unknown -> resolved.value.trim()
+        BarcodeKind.Lot, BarcodeKind.Serial -> resolved.itemNo?.trim().orEmpty()
+        else -> return null
+    }
+    if (itemNo.isBlank()) return null
+    return CountV2ManualCandidate(
+        itemNo = itemNo,
+        lotNo = resolved.lotNo?.trim().orEmpty(),
+        serialNo = resolved.serialNo?.trim().orEmpty(),
+        raw = resolved.raw,
+    )
+}
+
 /** Donanım/kamera aynı decode olayını art arda yayarsa miktarın iki kez eklenmesini önler. */
 internal fun isRapidCountV2Duplicate(
     previousRaw: String,

@@ -1,7 +1,7 @@
 {
-  "versionCode": 1448,
-  "versionName": "1.14.48-emu",
-  "apkUrl": "https://github.com/DynOpsBC/el_terminal_dkc/releases/download/emu-v1.14.48/BCWMS-EMU-1.14.48-RELEASE.apk",
-  "sha256": "0c50e176cbd735e93228567eaca1270c4c375f2e25eb051f202dd2deb8c3e5d1",
-  "releaseNotes": "DKC/EMU bağımsız kaynak deposu: hiyerarşik ürün-kutu-palet LP akışı ve güncel ortak WMS düzeltmeleri."
+  "versionCode": 200059,
+  "versionName": "1.14.59-emu",
+  "apkUrl": "https://github.com/DynOpsBC/el_terminal_dkc/releases/download/emu-v1.14.59/BCWMS-EMU-1.14.59-RELEASE.apk",
+  "sha256": "0a17e9fadf962f4bc5af1a68a77841d30781aa8a6abdd75aeaba29e8717c4280",
+  "releaseNotes": "BADE'deki güncel Sayım V2, çoklu lot sevkiyat ve mal kabul LP düzeltmeleri EMU'ya aktarıldı; DKC ürün-kutu-palet hiyerarşisi korundu."
 }

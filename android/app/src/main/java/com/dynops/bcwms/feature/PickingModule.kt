@@ -1711,6 +1711,7 @@ private fun PickDocument(no: String, onBack: () -> Unit) {
     var toteSuggest by remember { mutableStateOf<Pair<JSONObject, String>?>(null) }
     // ELOG raf modu: raf (bin) barkodu okutulunca liste o rafın satırlarına iner.
     var binFilter by remember { mutableStateOf("") }
+    var showCancelConfirm by remember { mutableStateOf(false) }
 
     fun reload() {
         scope.launch {
@@ -1745,6 +1746,19 @@ private fun PickDocument(no: String, onBack: () -> Unit) {
             status = if (r.ok) "TAMAM: Toplama kaydedildi"
                 else QcErrorParser.friendlyStatus(BcApi.errorMessage(r.body), r.httpCode)
             if (r.ok) reload()
+        }
+    }
+
+    fun cancelForCurrentUser() {
+        scope.launch {
+            busy = true
+            status = "Toplama güvenli biçimde iptal ediliyor..."
+            val r = BcApi.cancelPick(context, no)
+            busy = false
+            showCancelConfirm = false
+            status = if (r.ok) "TAMAM: $no iptal edildi"
+                else "HATA (HTTP ${r.httpCode}): ${BcApi.errorMessage(r.body)}"
+            if (r.ok) onBack()
         }
     }
 
@@ -1819,7 +1833,16 @@ private fun PickDocument(no: String, onBack: () -> Unit) {
     val displayGroups = if (merge) groupLines(displayLines, ::pickLineCapacity) else emptyList()
     Column(Modifier.fillMaxSize()) {
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(12.dp)) {
-            TextButton(onClick = onBack) { Text("‹ Belge Listesi") }
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                TextButton(onClick = onBack) { Text("‹ Belge Listesi") }
+                Spacer(Modifier.weight(1f))
+                TextButton(
+                    onClick = { showCancelConfirm = true },
+                    enabled = !busy && header != null,
+                ) {
+                    Text("Pick'i İptal Et", color = MaterialTheme.colorScheme.error)
+                }
+            }
             DocHeaderCard(
                 title = no,
                 subtitle = "Lokasyon: ${h?.optString("locationCode") ?: ""} · ${bcStatusLabelTr(h?.optString("status") ?: "")}" +
@@ -1940,6 +1963,24 @@ private fun PickDocument(no: String, onBack: () -> Unit) {
                 put("lineNo", ln.optInt("lineNo")); put("qty", qty); put("reasonCode", reason)
             }.toString(), "Short pick işlendi")
         })
+    }
+
+    if (showCancelConfirm) {
+        AlertDialog(
+            onDismissRequest = { if (!busy) showCancelConfirm = false },
+            title = { Text("$no iptal edilsin mi?") },
+            text = { Text("Yalnız kaydedilmemiş toplama iptal edilir. Sevkiyat silinmez; gerekirse yeniden Pick Oluşturabilirsiniz.") },
+            dismissButton = {
+                TextButton(onClick = { showCancelConfirm = false }, enabled = !busy) { Text("Vazgeç") }
+            },
+            confirmButton = {
+                Button(
+                    onClick = { cancelForCurrentUser() },
+                    enabled = !busy,
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+                ) { Text("Pick'i İptal Et") }
+            },
+        )
     }
 
     val scanTarget = scanLine

@@ -7,6 +7,21 @@ Kurulum: [docs/android-install-guide.md](../../docs/android-install-guide.md)
 
 ---
 
+## v1.14.59-emu — 2026-08-28
+
+**APK:** `emu/BCWMS-EMU-1.14.59-RELEASE.apk`
+
+**SHA-256:** `0a17e9fadf962f4bc5af1a68a77841d30781aa8a6abdd75aeaba29e8717c4280`
+
+- Sayım V2'de LP, lot veya ürün barkodu BC stok miktarıyla otomatik satıra dönüşür;
+  operatör isterse oluşan satır miktarını sonradan değiştirebilir.
+- Sevkiyatta aynı ürünün birden fazla lot/raf satırı seçilip tek pick'e aktarılabilir.
+- Mal kabul LP başlat/kapat ve LP satırı ekleme tekrarlarında numara serisi ile
+  mevcut LP doğrulaması güçlendirildi.
+- DKC'ye özel ürün-kutu-palet hiyerarşisi ve EMU tenant ayarları korunmuştur.
+- Android EMU birim testleri ve release derlemesi başarılı; BC AL `1.14.0.73`
+  327 dosyayla hatasız derlendi.
+
 ## v1.14.28-bade — 2026-08-25
 
 **APK:** `BCWMS-BADE-1.14.28-BAGLANTI-LP-SAYIM-DUZELTMELERI.apk`

@@ -157,6 +157,18 @@ page 72092 "DOPSWHS Pick API"
     end;
 
     /// <summary>
+    /// Genel DELETE yerine kontrollü iptal: yalnız atanmış operatör ve henüz
+    /// hareket kaydetmemiş açık pick için çalışır.
+    /// </summary>
+    [ServiceEnabled]
+    procedure cancelFor(userId: Code[50])
+    var
+        PickMgmt: Codeunit "DOPSWHS Pick Mgmt";
+    begin
+        PickMgmt.CancelPickFor(Rec, userId);
+    end;
+
+    /// <summary>
     /// Terminal bu ucu YALNIZCA kendine atama için çağırır ("Bana Ata"/"Üzerine Al",
     /// userId = oturumdaki operatör). Bu yüzden zorla devretme değil, kural
     /// kontrollü üstlenme (ClaimPick) çalıştırılır: belge başkasındaysa reddedilir.

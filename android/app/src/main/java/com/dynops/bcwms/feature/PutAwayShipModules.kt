@@ -1240,6 +1240,7 @@ private fun WhsePickDocument(no: String, onBack: () -> Unit) {
     // aynı satırı toplarsa miktarlar çakışır. Kimlik bir kez çözülür.
     var myUserId by remember { mutableStateOf("") }
     var inFlightLineNos by remember(no) { mutableStateOf<Set<Int>>(emptySet()) }
+    var showCancelConfirm by remember { mutableStateOf(false) }
 
     fun reload() {
         scope.launch {
@@ -1296,6 +1297,19 @@ private fun WhsePickDocument(no: String, onBack: () -> Unit) {
         }
     }
 
+    fun cancelForCurrentUser() {
+        scope.launch {
+            busy = true
+            status = "Toplama güvenli biçimde iptal ediliyor..."
+            val r = BcApi.cancelPick(context, no)
+            busy = false
+            showCancelConfirm = false
+            status = if (r.ok) "TAMAM: $no iptal edildi"
+                else "HATA (HTTP ${r.httpCode}): ${BcApi.errorMessage(r.body)}"
+            if (r.ok) onBack()
+        }
+    }
+
     val h = header
     val assignedTo = h?.optString("assignedUserId")?.trim().orEmpty()
     val canMutate = headerLoaded && linesComplete &&
@@ -1333,7 +1347,16 @@ private fun WhsePickDocument(no: String, onBack: () -> Unit) {
 
     Column(Modifier.fillMaxSize()) {
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(12.dp)) {
-            TextButton(onClick = onBack) { Text("‹ Belge Listesi") }
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                TextButton(onClick = onBack) { Text("‹ Belge Listesi") }
+                Spacer(Modifier.weight(1f))
+                TextButton(
+                    onClick = { showCancelConfirm = true },
+                    enabled = !busy && canMutate,
+                ) {
+                    Text("Pick'i İptal Et", color = MaterialTheme.colorScheme.error)
+                }
+            }
             DocHeaderCard(
                 title = no,
                 subtitle = "Lokasyon: ${h?.optString("locationCode") ?: ""} · ${bcStatusLabelTr(h?.optString("status") ?: "")}",
@@ -1445,6 +1468,23 @@ private fun WhsePickDocument(no: String, onBack: () -> Unit) {
             onConfirm = { res ->
                 qtyLine = null
                 updateLine(ql, res.quantity, res.lotNo)
+            },
+        )
+    }
+    if (showCancelConfirm) {
+        AlertDialog(
+            onDismissRequest = { if (!busy) showCancelConfirm = false },
+            title = { Text("$no iptal edilsin mi?") },
+            text = { Text("Yalnız kaydedilmemiş toplama iptal edilir. Sevkiyat silinmez; yeniden Pick Oluşturabilirsiniz.") },
+            dismissButton = {
+                TextButton(onClick = { showCancelConfirm = false }, enabled = !busy) { Text("Vazgeç") }
+            },
+            confirmButton = {
+                Button(
+                    onClick = { cancelForCurrentUser() },
+                    enabled = !busy,
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+                ) { Text("Pick'i İptal Et") }
             },
         )
     }

@@ -29,6 +29,9 @@ codeunit 72040 "DOPSWHS LP Management"
             Error('%1 rafı %2 lokasyonunda bulunamadı.', BinCode, LocationCode);
 
         LogMutation('LP.Build');
+        // Record.Init() primary key'i korur. Daha önce okunan LP numarasının
+        // yeni LP oluşturulurken tekrar kullanılmasını engelle.
+        Clear(LP);
         LP.Init();
         LP."LP Template Code" := TemplateCode;
         LP."Unit Type" := Template."Unit Type";

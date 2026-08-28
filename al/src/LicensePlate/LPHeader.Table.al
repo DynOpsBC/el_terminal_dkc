@@ -82,14 +82,25 @@ table 72010 "DOPSWHS LP Header"
 
     trigger OnInsert()
     var
+        ExistingLP: Record "DOPSWHS LP Header";
         LPSeriesSetup: Codeunit "DOPSWHS LP Series Setup";
         NoSeries: Codeunit "No. Series";
         Telemetry: Codeunit "DOPSWHS Telemetry";
         LPNoSeriesCode: Code[20];
+        Attempts: Integer;
     begin
         if "No." = '' then begin
             LPNoSeriesCode := LPSeriesSetup.EnsureLpNoSeries();
-            "No." := NoSeries.GetNextNo(LPNoSeriesCode);
+            // A restored/copied company can contain LP records that are ahead
+            // of the number series. Consume numbers until an unused LP is found.
+            repeat
+                "No." := NoSeries.GetNextNo(LPNoSeriesCode);
+                Attempts += 1;
+                if Attempts > 10000 then
+                    Error(
+                        '%1 numara serisinde kullanılabilir LP numarası bulunamadı. Numara serisinin son kullanılan değerini kontrol edin.',
+                        LPNoSeriesCode);
+            until not ExistingLP.Get("No.");
         end;
         "Built By User" := CopyStr(UserId(), 1, MaxStrLen("Built By User"));
         "Built DateTime" := CurrentDateTime();

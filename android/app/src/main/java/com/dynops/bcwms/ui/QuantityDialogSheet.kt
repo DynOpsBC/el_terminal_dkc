@@ -272,7 +272,13 @@ fun QuantityDialogSheet(
                 }
                 if (effectiveLotRequired && lot.isBlank()) {
                     Text(
-                        "Lot takipli üründe sevkiyat için stoktaki bir lotu seçmelisiniz.",
+                        when {
+                            onAssignLotNo != null ->
+                                "Lot takipli mal kabul için Lot No Ata düğmesine dokunun."
+                            lotSelectionOnly || lotLookupVisible ->
+                                "Lot takipli üründe stoktaki bir lotu seçmelisiniz."
+                            else -> "Lot takipli ürün için lot numarası girilmelidir."
+                        },
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                     )

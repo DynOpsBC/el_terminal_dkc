@@ -578,6 +578,23 @@ object BcApi {
         return boundActionLongRunning(context, "picks", pickNo, "registerFor", body)
     }
 
+    /**
+     * Genel DELETE'i açmadan, yalnız terminalde oturum açmış belge sahibinin
+     * henüz kaydedilmemiş pick'ini sunucudaki güvenlik kontrolleriyle iptal eder.
+     */
+    suspend fun cancelPick(context: Context, pickNo: String): ApiResult {
+        val userId = currentUserId(context)
+        if (userId.isBlank()) {
+            return ApiResult(
+                ok = false,
+                httpCode = HttpURLConnection.HTTP_UNAUTHORIZED,
+                body = """{"error":{"message":"Depo kullanıcısı belirlenemedi. Yeniden giriş yapın."}}""",
+            )
+        }
+        val body = JSONObject().apply { put("userId", userId) }.toString()
+        return boundAction(context, "picks", pickNo, "cancelFor", body)
+    }
+
     internal fun isRetryablePickConfirmation(httpCode: Int, body: String): Boolean =
         httpCode == 409 || httpCode == 423 || httpCode == 429 || httpCode >= 500 ||
             body.contains("deadlock", ignoreCase = true) ||

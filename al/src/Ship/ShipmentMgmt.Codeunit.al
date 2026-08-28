@@ -4,7 +4,7 @@ codeunit 72047 "DOPSWHS Shipment Mgmt"
     Permissions =
         tabledata "Warehouse Entry" = r,
         tabledata "Reservation Entry" = r,
-        tabledata "Whse. Item Tracking Line" = r;
+        tabledata "Whse. Item Tracking Line" = rimd;
 
     procedure ConfirmShipmentLine(var WhseShipmentLine: Record "Warehouse Shipment Line"; QtyToShip: Decimal; LotNo: Code[50]; LicensePlateNo: Code[20]; SSCC: Code[18])
     var
@@ -44,17 +44,21 @@ codeunit 72047 "DOPSWHS Shipment Mgmt"
             exit;
         end;
 
-        SetSourceReservationFilters(ReservationEntry, WhseShipmentLine);
-        ReservationEntry.SetFilter("Lot No.", '<>%1', '');
-        if UniqueReservationLot(ReservationEntry, LotNo) then
-            exit;
-        Clear(LotNo);
-
         WhseItemTrackingLine.SetRange("Source Type", Database::"Warehouse Shipment Line");
         WhseItemTrackingLine.SetRange("Source ID", WhseShipmentLine."No.");
         WhseItemTrackingLine.SetRange("Source Ref. No.", WhseShipmentLine."Line No.");
         WhseItemTrackingLine.SetFilter("Lot No.", '<>%1', '');
-        UniqueWarehouseTrackingLot(WhseItemTrackingLine, LotNo);
+        if not WhseItemTrackingLine.IsEmpty() then begin
+            // Warehouse tracking is the latest operational truth. If it has
+            // multiple lots, keep LotNo blank instead of falling back to an
+            // older single-lot reservation from the source sales line.
+            UniqueWarehouseTrackingLot(WhseItemTrackingLine, LotNo);
+            exit;
+        end;
+
+        SetSourceReservationFilters(ReservationEntry, WhseShipmentLine);
+        ReservationEntry.SetFilter("Lot No.", '<>%1', '');
+        UniqueReservationLot(ReservationEntry, LotNo);
     end;
 
     procedure CreatePick(var WhseShipmentHeader: Record "Warehouse Shipment Header"): Code[20]
@@ -96,6 +100,13 @@ codeunit 72047 "DOPSWHS Shipment Mgmt"
         WhseShipmentLine.SetRange("No.", WhseShipmentHeader."No.");
         if not WhseShipmentLine.FindFirst() then
             Error(NoShipmentLinesErr, WhseShipmentHeader."No.");
+
+        // The mobile tracked-item flow deliberately lets the warehouse pick
+        // split the requested quantity across the actually available lots and
+        // bins. Remove only shipment-level tracking copied from an earlier
+        // single-lot choice. Source sales reservations are left untouched.
+        PrepareShipmentForMultiLotPick(WhseShipmentHeader."No.");
+        WhseShipmentLine.FindFirst();
 
         // Microsoft raporu gerçek BC/Warehouse Employee hesabıyla çalışsın;
         // oluşturulan başlığın operasyonel sahibi aşağıda yerel WMS kullanıcısı
@@ -156,7 +167,6 @@ codeunit 72047 "DOPSWHS Shipment Mgmt"
     var
         WhseShipmentLine: Record "Warehouse Shipment Line";
         WhseActivityLine: Record "Warehouse Activity Line";
-        LotNo: Code[50];
     begin
         WhseActivityLine.SetRange("Activity Type", WhseActivityLine."Activity Type"::Pick);
         WhseActivityLine.SetRange("No.", PickNo);
@@ -165,13 +175,108 @@ codeunit 72047 "DOPSWHS Shipment Mgmt"
         if WhseActivityLine.FindSet(true) then
             repeat
                 if WhseShipmentLine.Get(ShipmentNo, WhseActivityLine."Whse. Document Line No.") then begin
-                    GetShipmentLineLot(WhseShipmentLine, LotNo);
-                    if LotNo <> '' then begin
-                        WhseActivityLine.Validate("Lot No.", LotNo);
+                    // Never copy a source reservation lot over BC's generated
+                    // multi-lot pick lines. Only an explicit mobile override
+                    // may fill a still-empty activity line.
+                    if (WhseActivityLine."Lot No." = '') and
+                       (WhseShipmentLine."DOPSWHS Lot No." <> '')
+                    then begin
+                        WhseActivityLine.Validate("Lot No.", WhseShipmentLine."DOPSWHS Lot No.");
                         WhseActivityLine.Modify(true);
                     end;
                 end;
             until WhseActivityLine.Next() = 0;
+    end;
+
+    local procedure PrepareShipmentForMultiLotPick(ShipmentNo: Code[20])
+    var
+        WhseShipmentLine: Record "Warehouse Shipment Line";
+        WhseItemTrackingLine: Record "Whse. Item Tracking Line";
+    begin
+        WhseShipmentLine.SetRange("No.", ShipmentNo);
+        WhseShipmentLine.SetFilter("Qty. Outstanding", '>0');
+        if WhseShipmentLine.FindSet(true) then
+            repeat
+                if ShipmentLineRequiresLot(WhseShipmentLine) then begin
+                    WhseItemTrackingLine.Reset();
+                    WhseItemTrackingLine.SetRange("Source Type", Database::"Warehouse Shipment Line");
+                    WhseItemTrackingLine.SetRange("Source ID", WhseShipmentLine."No.");
+                    WhseItemTrackingLine.SetRange("Source Ref. No.", WhseShipmentLine."Line No.");
+                    if not WhseItemTrackingLine.IsEmpty() then
+                        WhseItemTrackingLine.DeleteAll(true);
+
+                    if WhseShipmentLine."DOPSWHS Lot No." <> '' then begin
+                        Clear(WhseShipmentLine."DOPSWHS Lot No.");
+                        WhseShipmentLine.Modify(true);
+                    end;
+
+                    CreateAutomaticMultiLotTracking(WhseShipmentLine);
+                end;
+            until WhseShipmentLine.Next() = 0;
+    end;
+
+    local procedure CreateAutomaticMultiLotTracking(WhseShipmentLine: Record "Warehouse Shipment Line")
+    var
+        WarehouseEntry: Record "Warehouse Entry";
+        WhseItemTrackingLine: Record "Whse. Item Tracking Line";
+        LotQtyByNo: Dictionary of [Code[50], Decimal];
+        LotNos: List of [Code[50]];
+        LotNo: Code[50];
+        ExistingQtyBase: Decimal;
+        AllocateQtyBase: Decimal;
+        RemainingQtyBase: Decimal;
+        EntryNo: Integer;
+    begin
+        WhseShipmentLine.CalcFields("Pick Qty. (Base)");
+        RemainingQtyBase :=
+            WhseShipmentLine."Qty. (Base)" -
+            (WhseShipmentLine."Qty. Picked (Base)" + WhseShipmentLine."Pick Qty. (Base)");
+        if RemainingQtyBase <= 0 then
+            exit;
+
+        // Aggregate the net warehouse stock by lot across bins. Supplying one
+        // tracking row per lot makes Microsoft's Create Pick report generate
+        // separate Take/Place lines instead of forcing the whole shipment onto
+        // the stale single lot copied from the sales document.
+        WarehouseEntry.SetRange("Item No.", WhseShipmentLine."Item No.");
+        WarehouseEntry.SetRange("Variant Code", WhseShipmentLine."Variant Code");
+        WarehouseEntry.SetRange("Location Code", WhseShipmentLine."Location Code");
+        WarehouseEntry.SetFilter("Lot No.", '<>%1', '');
+        if WarehouseEntry.FindSet() then
+            repeat
+                LotNo := WarehouseEntry."Lot No.";
+                if LotQtyByNo.Get(LotNo, ExistingQtyBase) then
+                    LotQtyByNo.Set(LotNo, ExistingQtyBase + WarehouseEntry."Qty. (Base)")
+                else begin
+                    LotQtyByNo.Add(LotNo, WarehouseEntry."Qty. (Base)");
+                    LotNos.Add(LotNo);
+                end;
+            until WarehouseEntry.Next() = 0;
+
+        EntryNo := WhseItemTrackingLine.GetLastEntryNo();
+        foreach LotNo in LotNos do begin
+            LotQtyByNo.Get(LotNo, ExistingQtyBase);
+            if (ExistingQtyBase > 0) and (RemainingQtyBase > 0) then begin
+                AllocateQtyBase := ExistingQtyBase;
+                if AllocateQtyBase > RemainingQtyBase then
+                    AllocateQtyBase := RemainingQtyBase;
+
+                WhseItemTrackingLine.Init();
+                EntryNo += 1;
+                WhseItemTrackingLine."Entry No." := EntryNo;
+                WhseItemTrackingLine."Item No." := WhseShipmentLine."Item No.";
+                WhseItemTrackingLine."Variant Code" := WhseShipmentLine."Variant Code";
+                WhseItemTrackingLine."Location Code" := WhseShipmentLine."Location Code";
+                WhseItemTrackingLine."Source Type" := Database::"Warehouse Shipment Line";
+                WhseItemTrackingLine."Source ID" := WhseShipmentLine."No.";
+                WhseItemTrackingLine."Source Ref. No." := WhseShipmentLine."Line No.";
+                WhseItemTrackingLine."Qty. per Unit of Measure" := WhseShipmentLine."Qty. per Unit of Measure";
+                WhseItemTrackingLine.Validate("Lot No.", LotNo);
+                WhseItemTrackingLine.Validate("Quantity (Base)", AllocateQtyBase);
+                WhseItemTrackingLine.Insert(true);
+                RemainingQtyBase -= AllocateQtyBase;
+            end;
+        end;
     end;
 
     procedure PostShipment(var WhseShipmentHeader: Record "Warehouse Shipment Header"; PrintPackingSlip: Boolean; Invoice: Boolean)

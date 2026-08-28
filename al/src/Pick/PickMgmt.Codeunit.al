@@ -379,6 +379,49 @@ codeunit 72046 "DOPSWHS Pick Mgmt"
         RegisterPickInternal(Pick, RequestingUserId);
     end;
 
+    /// <summary>
+    /// Terminalden güvenli toplama iptali. Genel API DELETE bilerek kapalıdır;
+    /// yalnız belge sahibi, henüz kaydedilmemiş ve fiziksel hareket üretmemiş
+    /// açık bir pick'i bu işlemle iptal edebilir. Standart tablo OnDelete
+    /// tetikleyicisi satırları ve bağlı depo izleme kayıtlarını temizler.
+    /// </summary>
+    procedure CancelPickFor(var Pick: Record "Warehouse Activity Header"; RequestingUserId: Code[50])
+    var
+        LockedPick: Record "Warehouse Activity Header";
+        PickLine: Record "Warehouse Activity Line";
+        PickingHeader: Record "DOPSWHS Picking Order Header";
+        PickNo: Code[20];
+    begin
+        EnsurePick(Pick);
+        if RequestingUserId = '' then
+            Error(RequestingUserRequiredErr);
+
+        LockedPick.LockTable();
+        if not LockedPick.Get(LockedPick.Type::Pick, Pick."No.") then
+            Error(PickGoneErr, Pick."No.");
+        CheckOwnershipFor(LockedPick."No.", LockedPick."Assigned User ID", RequestingUserId);
+
+        PickLine.SetRange("Activity Type", LockedPick.Type);
+        PickLine.SetRange("No.", LockedPick."No.");
+        PickLine.SetFilter("Qty. Handled", '<>0');
+        if not PickLine.IsEmpty() then
+            Error(PickCancelHandledErr, LockedPick."No.");
+
+        PickNo := LockedPick."No.";
+        LockedPick.Delete(true);
+
+        // Özel toplama grubu bu standart pick'e bağlıysa tekrar oluşturulabilsin.
+        PickingHeader.SetRange("Warehouse Pick No.", PickNo);
+        if PickingHeader.FindSet(true) then
+            repeat
+                PickingHeader."Warehouse Pick No." := '';
+                PickingHeader.Modify(true);
+            until PickingHeader.Next() = 0;
+
+        Log('Pick.Cancel', PickNo, RequestingUserId);
+        Clear(Pick);
+    end;
+
     local procedure RegisterPickInternal(var Pick: Record "Warehouse Activity Header"; RequestingUserId: Code[50])
     var
         PickLine: Record "Warehouse Activity Line";
@@ -821,6 +864,7 @@ codeunit 72046 "DOPSWHS Pick Mgmt"
         PickingOrderCompletedErr: Label 'Toplama grubu %1 tamamlandı; ataması değiştirilemez.', Comment = '%1 = Entry No.';
         NewUserRequiredErr: Label 'Atanacak kullanıcı seçilmedi.';
         RequestingUserRequiredErr: Label 'İşlemi yapan operatör kimliği gönderilmedi.';
+        PickCancelHandledErr: Label 'Toplama %1 üzerinde kaydedilmiş hareket var; güvenli iptal edilemez.', Comment = '%1 = Pick No.';
         PickLineBinRequiredErr: Label '%1 toplamasının %2 satırında (%3 ürünü) kaynak raf/bin boş. Bin içeriğini düzeltip pick''i yeniden oluşturun; rafı belli olmayan satır terminalden onaylanamaz.', Comment = '%1 = Pick No., %2 = Line No., %3 = Item No.';
         SelfClaimReasonLbl: Label 'Terminalden üzerine alındı.';
         UnassignedLbl: Label 'atanmamış';
