@@ -170,7 +170,7 @@ dependencies {
   implementation("androidx.camera:camera-lifecycle:1.4.0")
   implementation("androidx.camera:camera-view:1.4.0")
   implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
-  implementation("androidx.core:core:1.13.1")
+  implementation("androidx.core:core:1.19.0")
   testImplementation(libs.junit)
   // Android's org.json classes are stubs in local JVM tests. Use the reference
   // implementation so pagination payload parsing is exercised for real.
