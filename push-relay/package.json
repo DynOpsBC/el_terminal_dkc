@@ -15,7 +15,7 @@
     "@azure/data-tables": "^13.3.0",
     "@azure/web-pubsub": "^1.1.1",
     "axios": "^1.7.7",
-    "firebase-admin": "^13.0.1"
+    "firebase-admin": "^14.4.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
